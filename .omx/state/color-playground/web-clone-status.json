@@ -1,0 +1,11 @@
+{
+  "status": "completed",
+  "completed_at": "2026-07-14T21:07:00+08:00",
+  "local_url": "http://127.0.0.1:4173/color-playground.html",
+  "verification": {
+    "palette_count": 7,
+    "copy_button_present": true,
+    "palette_switch": "teal-garden",
+    "prompt_updated": true
+  }
+}

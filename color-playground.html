@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Palette Playground</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ui-bg:      #0e0d0b;
+  --ui-surface: #1a1918;
+  --ui-border:  rgba(240,236,224,0.09);
+  --ui-text:    #f0ece0;
+  --ui-dim:     #857e72;
+  --ui-accent:  #d4ff2c;
+  --mono:       'JetBrains Mono', 'Courier New', monospace;
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  background: var(--ui-bg);
+  color: var(--ui-text);
+  font-family: system-ui, -apple-system, sans-serif;
+  display: grid;
+  grid-template-columns: 270px 1fr;
+  grid-template-rows: 100vh;
+}
+
+/* ── LEFT PANEL ── */
+#panel {
+  border-right: 1px solid var(--ui-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#panel-head {
+  padding: 18px 16px 12px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.panel-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ui-dim);
+  display: block;
+}
+
+#palette-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pal-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid var(--ui-border);
+  border-radius: 3px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.pal-btn:hover { border-color: rgba(240,236,224,0.22); }
+.pal-btn.active { border-color: var(--ui-accent); }
+
+.pal-swatches {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.swatch {
+  width: 18px;
+  height: 36px;
+  border-radius: 2px;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+.pal-info { flex: 1; min-width: 0; }
+.pal-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ui-text);
+  display: block;
+  margin-bottom: 2px;
+}
+.pal-colors {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--ui-dim);
+  line-height: 1.5;
+}
+
+/* Current tag */
+.current-tag {
+  display: none;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ui-bg);
+  background: var(--ui-accent);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+.pal-btn.active .current-tag { display: block; }
+
+/* ── RIGHT PANEL ── */
+#right {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Slide previews row */
+#slides-area {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  overflow: hidden;
+}
+
+.slide-preview-wrap {
+  position: relative;
+  border-right: 1px solid var(--ui-border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.slide-preview-wrap:last-child { border-right: none; }
+
+.slide-label {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(240,236,224,0.25);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* The actual slide canvas area */
+.slide-frame {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  transition: background 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dot-grid texture */
+.slide-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+}
+
+/* ── SLIDE 1: TITLE ── */
+.slide-title {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.s1-rule {
+  width: 40px;
+  height: 2px;
+  margin-bottom: 14px;
+  transition: background 0.4s;
+}
+.s1-pretitle {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  transition: color 0.4s;
+}
+.s1-heading {
+  font-size: clamp(18px, 3.5vw, 32px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin-bottom: 6px;
+  transition: color 0.4s;
+}
+.s1-heading em {
+  font-style: normal;
+  transition: color 0.4s;
+}
+.s1-sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  transition: color 0.4s;
+}
+.s1-sub-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.4s;
+}
+.s1-sub-text {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.4s;
+}
+
+/* ── SLIDE 2: CARDS ── */
+.slide-cards {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.s2-label {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  transition: color 0.4s;
+}
+.s2-heading {
+  font-size: clamp(16px, 3vw, 26px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+  transition: color 0.4s;
+}
+.s2-heading em {
+  font-style: normal;
+  transition: color 0.4s;
+}
+.s2-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.s2-card {
+  border-radius: 4px;
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: background 0.4s, border-color 0.4s;
+  border: 1px solid transparent;
+}
+.s2-num {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  transition: color 0.4s;
+}
+.s2-card-title {
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.3;
+  transition: color 0.4s;
+}
+.s2-card-body {
+  font-size: 8px;
+  line-height: 1.4;
+  opacity: 0.65;
+  transition: color 0.4s;
+}
+
+/* ── BOTTOM BAR ── */
+#bottom {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  border-top: 1px solid var(--ui-border);
+  min-height: 64px;
+  gap: 0;
+}
+#prompt-wrap {
+  padding: 12px 18px;
+  overflow: hidden;
+}
+#prompt-text {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ui-dim);
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+#copy-btn {
+  margin: 0 16px;
+  background: transparent;
+  border: 1px solid rgba(212,255,44,0.3);
+  color: var(--ui-accent);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 9px 16px;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+#copy-btn:hover { background: rgba(212,255,44,0.07); }
+#copy-btn.ok { color: var(--ui-text); border-color: rgba(240,236,224,0.2); }
+</style>
+</head>
+<body>
+
+<!-- ── LEFT ── -->
+<div id="panel">
+  <div id="panel-head">
+    <span class="panel-label">Color Palette</span>
+  </div>
+  <div id="palette-list">
+    <!-- injected by JS -->
+  </div>
+</div>
+
+<!-- ── RIGHT ── -->
+<div id="right">
+  <div id="slides-area">
+
+    <!-- Slide 1: Title -->
+    <div class="slide-preview-wrap">
+      <div class="slide-label">Slide 01 — Title</div>
+      <div class="slide-frame" id="frame1">
+        <div class="slide-title">
+          <div class="s1-rule" id="s1-rule"></div>
+          <div class="s1-pretitle" id="s1-pretitle">Vibe Code Jam · 2025</div>
+          <div class="s1-heading" id="s1-heading">
+            Code as a Medium<br>for <em id="s1-em">Storytelling</em>
+          </div>
+          <div class="s1-sub" id="s1-sub">
+            <div class="s1-sub-dot" id="s1-dot"></div>
+            <span class="s1-sub-text" id="s1-subtext">Zara &nbsp;·&nbsp; Vibe Code Jam</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: Cards -->
+    <div class="slide-preview-wrap">
+      <div class="slide-label">Slide 13 — 7 Lessons</div>
+      <div class="slide-frame" id="frame2">
+        <div class="slide-cards">
+          <div class="s2-label" id="s2-label">Lessons Learned</div>
+          <div class="s2-heading" id="s2-heading">Working with <em id="s2-em">Coding Agents</em></div>
+          <div class="s2-grid" id="s2-grid">
+            <!-- 6 cards (7th omitted for space) -->
+            <div class="s2-card" id="c0"><div class="s2-num" id="n0">01</div><div class="s2-card-title" id="t0">Context, not control</div><div class="s2-card-body" id="b0">Don't micromanage. It's smarter than you think.</div></div>
+            <div class="s2-card" id="c1"><div class="s2-num" id="n1">02</div><div class="s2-card-title" id="t1">Push to the limits</div><div class="s2-card-body" id="b1">Only breaking it reveals what it can do.</div></div>
+            <div class="s2-card" id="c2"><div class="s2-num" id="n2">03</div><div class="s2-card-title" id="t2">Do it a lot</div><div class="s2-card-body" id="b2">No shortcut. Just reps.</div></div>
+            <div class="s2-card" id="c3"><div class="s2-num" id="n3">04</div><div class="s2-card-title" id="t3">Try everything</div><div class="s2-card-body" id="b3">Waste tokens. Do playful experiments.</div></div>
+            <div class="s2-card" id="c4"><div class="s2-num" id="n4">05</div><div class="s2-card-title" id="t4">Build in public</div><div class="s2-card-body" id="b4">Twitter is the best textbook.</div></div>
+            <div class="s2-card" id="c5"><div class="s2-num" id="n5">06</div><div class="s2-card-title" id="t5">Make it fun</div><div class="s2-card-body" id="b5">Chuckle at the output. Stay curious.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="bottom">
+    <div id="prompt-wrap">
+      <div id="prompt-text"></div>
+    </div>
+    <button id="copy-btn">Copy Prompt</button>
+  </div>
+</div>
+
+<script>
+// ─── PALETTES ──────────────────────────────────────────────────────────────
+// Parsed from Huemint URLs. Each has: bg, text, accent (+ accent2 if 3-color).
+// Color role assignment: darkest/first = bg, lightest = text, most vivid = accent.
+
+const PALETTES = [
+  {
+    id: 'current',
+    name: 'Current (Chartreuse)',
+    colors: ['#111110', '#f0ece0', '#d4ff2c'],
+    bg: '#111110', text: '#f0ece0', textDim: '#857e72',
+    accent: '#d4ff2c', surface: '#1c1b18', border: 'rgba(240,236,224,0.10)',
+  },
+  {
+    id: 'forest-lime',
+    name: 'Forest + Lime',
+    colors: ['#241e28', '#a2da59'],
+    bg: '#241e28', text: '#f0ead8', textDim: '#8a7e6a',
+    accent: '#a2da59', surface: '#2e2633', border: 'rgba(162,218,89,0.15)',
+  },
+  {
+    id: 'teal-garden',
+    name: 'Teal Garden',
+    colors: ['#0d3931', '#1bafd6', '#009d23'],
+    bg: '#0d3931', text: '#d8f5ef', textDim: '#6eada0',
+    accent: '#1bafd6', accent2: '#009d23', surface: '#122e27', border: 'rgba(27,175,214,0.18)',
+  },
+  {
+    id: 'white-red',
+    name: 'Paper + Vermillion',
+    colors: ['#ffffff', '#0b0202', '#e73243'],
+    bg: '#ffffff', text: '#0b0202', textDim: '#6b5a5a',
+    accent: '#e73243', surface: '#f5f0f0', border: 'rgba(11,2,2,0.1)',
+  },
+  {
+    id: 'white-pink-purple',
+    name: 'Paper + Pink + Purple',
+    colors: ['#ffffff', '#db6c8c', '#5353f5'],
+    bg: '#ffffff', text: '#1a1a2e', textDim: '#888',
+    accent: '#5353f5', accent2: '#db6c8c', surface: '#f5f2f8', border: 'rgba(83,83,245,0.12)',
+  },
+  {
+    id: 'ocean-solar',
+    name: 'Ocean + Solar',
+    colors: ['#192933', '#ffcf36', '#00c788'],
+    bg: '#192933', text: '#e8f4f0', textDim: '#6a9080',
+    accent: '#ffcf36', accent2: '#00c788', surface: '#1e3340', border: 'rgba(255,207,54,0.18)',
+  },
+  {
+    id: 'ink-green',
+    name: 'Ink + Green',
+    colors: ['#191d1b', '#ebeff0', '#60b947'],
+    bg: '#191d1b', text: '#ebeff0', textDim: '#7a8a80',
+    accent: '#60b947', surface: '#212521', border: 'rgba(96,185,71,0.18)',
+  },
+];
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let current = PALETTES[0];
+
+// ─── BUILD PALETTE LIST ────────────────────────────────────────────────────
+const list = document.getElementById('palette-list');
+
+PALETTES.forEach((pal, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'pal-btn' + (i === 0 ? ' active' : '');
+  btn.dataset.id = pal.id;
+
+  const swatchWrap = document.createElement('div');
+  swatchWrap.className = 'pal-swatches';
+  pal.colors.forEach(c => {
+    const s = document.createElement('div');
+    s.className = 'swatch';
+    s.style.background = c;
+    swatchWrap.appendChild(s);
+  });
+
+  const info = document.createElement('div');
+  info.className = 'pal-info';
+  info.innerHTML = `
+    <span class="pal-name">${pal.name}</span>
+    <span class="pal-colors">${pal.colors.join('  ')}</span>
+  `;
+
+  const tag = document.createElement('span');
+  tag.className = 'current-tag';
+  tag.textContent = 'active';
+
+  btn.appendChild(swatchWrap);
+  btn.appendChild(info);
+  btn.appendChild(tag);
+  btn.addEventListener('click', () => applyPalette(pal));
+  list.appendChild(btn);
+});
+
+// ─── APPLY PALETTE ─────────────────────────────────────────────────────────
+function applyPalette(pal) {
+  current = pal;
+
+  // Update active button
+  document.querySelectorAll('.pal-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.id === pal.id);
+  });
+
+  // ── Slide 1: Title
+  document.getElementById('frame1').style.background = pal.bg;
+  document.getElementById('s1-rule').style.background = pal.accent;
+  document.getElementById('s1-pretitle').style.color = pal.textDim;
+  document.getElementById('s1-heading').style.color  = pal.text;
+  document.getElementById('s1-em').style.color       = pal.accent;
+  document.getElementById('s1-sub').style.color      = pal.textDim;
+  document.getElementById('s1-dot').style.background = pal.accent2 || pal.accent;
+  document.getElementById('s1-subtext').style.color  = pal.textDim;
+
+  // ── Slide 2: Cards
+  document.getElementById('frame2').style.background = pal.bg;
+  document.getElementById('s2-label').style.color    = pal.textDim;
+  document.getElementById('s2-heading').style.color  = pal.text;
+  document.getElementById('s2-em').style.color       = pal.accent;
+
+  for (let i = 0; i < 6; i++) {
+    document.getElementById('c' + i).style.background  = pal.surface;
+    document.getElementById('c' + i).style.borderColor = pal.border;
+    // Alternate accent for num on 3-color palettes
+    const useAlt = pal.accent2 && i % 2 === 1;
+    document.getElementById('n' + i).style.color = useAlt ? pal.accent2 : pal.accent;
+    document.getElementById('t' + i).style.color = pal.text;
+    document.getElementById('b' + i).style.color = pal.textDim;
+  }
+
+  updatePrompt();
+}
+
+// ─── PROMPT ────────────────────────────────────────────────────────────────
+function updatePrompt() {
+  const p = current;
+  const has3 = !!p.accent2;
+
+  let msg = `Apply the "${p.name}" palette to the presentation. ` +
+    `Set --bg-deep and --bg-primary to ${p.bg}, --bg-surface to ${p.surface}, ` +
+    `--text-primary to ${p.text}, --text-secondary to ${p.textDim}, ` +
+    `--accent-warm and --accent-cool to ${p.accent}`;
+  if (has3) msg += `, --accent-gold to ${p.accent2}`;
+  msg += `. Update --gradient-warm-cool to match.`;
+
+  document.getElementById('prompt-text').textContent = msg;
+}
+
+// ─── COPY ──────────────────────────────────────────────────────────────────
+document.getElementById('copy-btn').addEventListener('click', () => {
+  navigator.clipboard.writeText(document.getElementById('prompt-text').textContent).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Copy Prompt'; btn.classList.remove('ok'); }, 1600);
+  });
+});
+
+// ─── INIT ──────────────────────────────────────────────────────────────────
+applyPalette(PALETTES[0]);
+</script>
+</body>
+</html>
+

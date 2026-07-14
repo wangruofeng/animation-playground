@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation Playground - Web Presentation Effects</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           DESIGN SYSTEM
+           ============================================ */
+        :root {
+            --void: #050508;
+            --cosmos: #0a0a0f;
+            --nebula: #12121a;
+            --surface: #1a1a24;
+            --cyan: #00f5ff;
+            --cyan-glow: rgba(0, 245, 255, 0.4);
+            --cyan-dim: rgba(0, 245, 255, 0.1);
+            --amber: #ffaa00;
+            --amber-glow: rgba(255, 170, 0, 0.4);
+            --magenta: #ff00aa;
+            --green: #00ff88;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --text-dim: rgba(255, 255, 255, 0.3);
+            --font-display: 'Clash Display', sans-serif;
+            --font-body: 'Satoshi', sans-serif;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--void);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           LAYOUT
+           ============================================ */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--cosmos);
+            border-right: 1px solid var(--cyan-dim);
+            padding: 30px 20px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar h1 {
+            font-family: var(--font-display);
+            font-size: 20px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--cyan), var(--amber));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar p {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-bottom: 30px;
+        }
+
+        .nav-section {
+            margin-bottom: 25px;
+        }
+
+        .nav-section h3 {
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+        }
+
+        .nav-section a {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-section a:hover {
+            background: var(--cyan-dim);
+            color: var(--cyan);
+            transform: translateX(5px);
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 40px 60px;
+            max-width: 1200px;
+        }
+
+        /* ============================================
+           SECTION STYLES
+           ============================================ */
+        .section {
+            margin-bottom: 100px;
+            scroll-margin-top: 40px;
+        }
+
+        .section-header {
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-display);
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        /* Demo Card */
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .demo-card {
+            background: var(--nebula);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .demo-preview {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-info {
+            padding: 20px;
+        }
+
+        .demo-info h4 {
+            font-family: var(--font-display);
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .demo-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .demo-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background: var(--cyan-dim);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-family: var(--font-display);
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--cyan);
+            color: var(--void);
+        }
+
+        .btn.secondary {
+            border-color: var(--text-dim);
+            color: var(--text-secondary);
+            background: transparent;
+        }
+
+        .btn.secondary:hover {
+            border-color: var(--amber);
+            color: var(--amber);
+        }
+
+        /* ============================================
+           1. TEXT EFFECTS
+           ============================================ */
+
+        /* Typewriter */
+        .typewriter {
+            font-family: var(--font-display);
+            font-size: 24px;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid var(--cyan);
+            animation: typing 3s steps(30) infinite, blink 0.5s step-end infinite alternate;
+        }
+
+        @keyframes typing {
+            0%, 100% { width: 0 }
+            50%, 90% { width: 100% }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent }
+        }
+
+        /* Scramble Text */
+        .scramble-text {
+            font-family: var(--font-display);
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            font-family: var(--font-display);
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--cyan), var(--magenta), var(--amber), var(--cyan));
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s linear infinite;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50% }
+            100% { background-position: 300% 50% }
+        }
+
+        /* Stroke Text */
+        .stroke-text {
+            font-family: var(--font-display);
+            font-size: 48px;
+            font-weight: 700;
+            color: transparent;
+            -webkit-text-stroke: 2px var(--cyan);
+            transition: all 0.3s ease;
+        }
+
+        .stroke-text:hover {
+            -webkit-text-stroke: 2px var(--amber);
+            color: var(--amber);
+        }
+
+        /* Glitch Text */
+        .glitch-text {
+            font-family: var(--font-display);
+            font-size: 36px;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-text::before {
+            color: var(--cyan);
+            animation: glitch-1 0.3s infinite linear alternate-reverse;
+            clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+        }
+
+        .glitch-text::after {
+            color: var(--magenta);
+            animation: glitch-2 0.3s infinite linear alternate-reverse;
+            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+        }
+
+        @keyframes glitch-1 {
+            0% { transform: translateX(-2px) }
+            100% { transform: translateX(2px) }
+        }
+
+        @keyframes glitch-2 {
+            0% { transform: translateX(2px) }
+            100% { transform: translateX(-2px) }
+        }
+
+        /* Blur Reveal */
+        .blur-reveal {
+            font-family: var(--font-display);
+            font-size: 32px;
+            filter: blur(10px);
+            opacity: 0.3;
+            transition: all 0.5s ease;
+        }
+
+        .blur-reveal.revealed {
+            filter: blur(0);
+            opacity: 1;
+        }
+
+        /* Split Text (per letter) */
+        .split-text {
+            font-family: var(--font-display);
+            font-size: 32px;
+        }
+
+        .split-text span {
+            display: inline-block;
+            transition: transform 0.3s var(--ease-elastic);
+        }
+
+        .split-text:hover span {
+            animation: wave 0.5s ease forwards;
+        }
+
+        .split-text span:nth-child(1) { animation-delay: 0s }
+        .split-text span:nth-child(2) { animation-delay: 0.05s }
+        .split-text span:nth-child(3) { animation-delay: 0.1s }
+        .split-text span:nth-child(4) { animation-delay: 0.15s }
+        .split-text span:nth-child(5) { animation-delay: 0.2s }
+        .split-text span:nth-child(6) { animation-delay: 0.25s }
+        .split-text span:nth-child(7) { animation-delay: 0.3s }
+        .split-text span:nth-child(8) { animation-delay: 0.35s }
+        .split-text span:nth-child(9) { animation-delay: 0.4s }
+        .split-text span:nth-child(10) { animation-delay: 0.45s }
+
+        @keyframes wave {
+            0%, 100% { transform: translateY(0) }
+            50% { transform: translateY(-15px) }
+        }
+
+        /* Highlight text */
+        .highlight-text {
+            font-size: 20px;
+            background: linear-gradient(120deg, var(--amber) 0%, var(--amber) 100%);
+            background-repeat: no-repeat;
+            background-size: 0% 100%;
+            background-position: 0 90%;
+            transition: background-size 0.5s ease;
+            padding: 0 4px;
+        }
+
+        .highlight-text.active {
+            background-size: 100% 30%;
+        }
+
+        /* Variable Font */
+        .variable-font {
+            font-family: var(--font-display);
+            font-size: 36px;
+            font-weight: 400;
+            transition: font-weight 0.3s ease;
+        }
+
+        .variable-font:hover {
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        /* ============================================
+           2. SCROLL EFFECTS (simulated with buttons)
+           ============================================ */
+
+        .scroll-demo-container {
+            height: 200px;
+            overflow-y: auto;
+            background: var(--void);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .scroll-content {
+            padding: 20px;
+            height: 600px;
+        }
+
+        .parallax-demo {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background: linear-gradient(to bottom, var(--void), var(--nebula));
+        }
+
+        .parallax-layer {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-family: var(--font-display);
+        }
+
+        .parallax-layer.back {
+            font-size: 80px;
+            color: var(--text-dim);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .parallax-layer.front {
+            font-size: 24px;
+            color: var(--cyan);
+            top: 60%;
+        }
+
+        /* Progress bar on scroll */
+        .scroll-progress-demo {
+            height: 4px;
+            background: var(--cyan);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* ============================================
+           3. PAGE TRANSITIONS
+           ============================================ */
+
+        .transition-demo {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .transition-slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 24px;
+            transition: all 0.5s var(--ease-out-expo);
+        }
+
+        .transition-slide.a { background: var(--cyan-dim); }
+        .transition-slide.b { background: var(--amber); color: var(--void); }
+
+        /* Wipe transition */
+        .wipe-demo .transition-slide.b {
+            clip-path: inset(0 100% 0 0);
+        }
+        .wipe-demo.active .transition-slide.b {
+            clip-path: inset(0 0 0 0);
+        }
+
+        /* Circle reveal */
+        .circle-demo .transition-slide.b {
+            clip-path: circle(0% at 50% 50%);
+        }
+        .circle-demo.active .transition-slide.b {
+            clip-path: circle(100% at 50% 50%);
+        }
+
+        /* Flip */
+        .flip-demo {
+            perspective: 1000px;
+        }
+        .flip-demo .transition-slide {
+            backface-visibility: hidden;
+            transition: transform 0.6s ease;
+        }
+        .flip-demo .transition-slide.b {
+            transform: rotateY(180deg);
+        }
+        .flip-demo.active .transition-slide.a {
+            transform: rotateY(-180deg);
+        }
+        .flip-demo.active .transition-slide.b {
+            transform: rotateY(0deg);
+        }
+
+        /* Zoom */
+        .zoom-demo .transition-slide.a {
+            z-index: 2;
+        }
+        .zoom-demo .transition-slide.b {
+            transform: scale(0.5);
+            opacity: 0;
+        }
+        .zoom-demo.active .transition-slide.a {
+            transform: scale(2);
+            opacity: 0;
+        }
+        .zoom-demo.active .transition-slide.b {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* ============================================
+           4. MOUSE/CURSOR EFFECTS
+           ============================================ */
+
+        /* Spotlight */
+        .spotlight-demo {
+            background: var(--void);
+            cursor: none;
+        }
+
+        .spotlight-demo::before {
+            content: 'Move your mouse here';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            color: var(--text-dim);
+        }
+
+        .spotlight-demo .spotlight {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: overlay;
+        }
+
+        /* Ripple */
+        .ripple-demo {
+            background: var(--nebula);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            color: var(--text-secondary);
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--cyan-glow);
+            transform: scale(0);
+            animation: ripple-effect 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-effect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Magnetic */
+        .magnetic-demo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .magnetic-btn {
+            padding: 20px 40px;
+            background: linear-gradient(135deg, var(--cyan), var(--amber));
+            border: none;
+            border-radius: 12px;
+            font-family: var(--font-display);
+            font-size: 16px;
+            color: var(--void);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        /* Tilt card */
+        .tilt-demo-card {
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(135deg, var(--cyan-dim), var(--nebula));
+            border: 1px solid var(--cyan);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            transition: transform 0.1s ease;
+            transform-style: preserve-3d;
+        }
+
+        /* ============================================
+           5. BACKGROUND EFFECTS
+           ============================================ */
+
+        /* Gradient mesh */
+        .gradient-mesh {
+            background:
+                radial-gradient(at 40% 20%, var(--cyan-glow) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, var(--magenta) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, var(--amber-glow) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, var(--green) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, var(--cyan) 0px, transparent 50%),
+                radial-gradient(at 80% 100%, var(--magenta) 0px, transparent 50%);
+            background-color: var(--void);
+            animation: mesh-move 10s ease infinite;
+        }
+
+        @keyframes mesh-move {
+            0%, 100% { background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 0% 50%, 100% 50%; }
+            50% { background-position: 100% 100%, 0% 100%, 100% 0%, 0% 0%, 100% 50%, 0% 50%; }
+        }
+
+        /* Noise/grain */
+        .noise-bg {
+            position: relative;
+            background: var(--nebula);
+        }
+
+        .noise-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .noise-bg span {
+            position: relative;
+            z-index: 1;
+            font-family: var(--font-display);
+            font-size: 24px;
+        }
+
+        /* Grid pattern */
+        .grid-bg {
+            background-image:
+                linear-gradient(var(--cyan-dim) 1px, transparent 1px),
+                linear-gradient(90deg, var(--cyan-dim) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: grid-move 20s linear infinite;
+        }
+
+        @keyframes grid-move {
+            0% { background-position: 0 0; }
+            100% { background-position: 30px 30px; }
+        }
+
+        /* Waves */
+        .wave-bg {
+            overflow: hidden;
+        }
+
+        .wave-bg svg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            animation: wave-move 5s linear infinite;
+        }
+
+        @keyframes wave-move {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ============================================
+           6. 3D EFFECTS
+           ============================================ */
+
+        /* 3D Card flip */
+        .flip-card {
+            width: 180px;
+            height: 120px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-family: var(--font-display);
+        }
+
+        .flip-card-front {
+            background: linear-gradient(135deg, var(--cyan), var(--cyan-dim));
+            color: var(--void);
+        }
+
+        .flip-card-back {
+            background: linear-gradient(135deg, var(--amber), var(--magenta));
+            color: var(--void);
+            transform: rotateY(180deg);
+        }
+
+        /* Floating */
+        .float-element {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--cyan), var(--amber));
+            border-radius: 16px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        /* 3D Cube */
+        .cube-container {
+            perspective: 500px;
+        }
+
+        .cube {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: cube-rotate 8s linear infinite;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 2px solid var(--cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 24px;
+            background: var(--cyan-dim);
+        }
+
+        .cube-face.front { transform: translateZ(40px); }
+        .cube-face.back { transform: rotateY(180deg) translateZ(40px); }
+        .cube-face.left { transform: rotateY(-90deg) translateZ(40px); }
+        .cube-face.right { transform: rotateY(90deg) translateZ(40px); }
+        .cube-face.top { transform: rotateX(90deg) translateZ(40px); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(40px); }
+
+        @keyframes cube-rotate {
+            0% { transform: rotateX(0) rotateY(0); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        /* ============================================
+           7. DATA VISUALIZATION
+           ============================================ */
+
+        /* Bar chart */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 150px;
+            padding: 20px;
+        }
+
+        .bar {
+            width: 30px;
+            background: linear-gradient(to top, var(--cyan), var(--amber));
+            border-radius: 4px 4px 0 0;
+            transition: height 0.8s var(--ease-out-expo);
+        }
+
+        /* Line chart */
+        .line-chart {
+            padding: 20px;
+        }
+
+        .line-chart svg {
+            width: 100%;
+            height: 120px;
+        }
+
+        .line-chart path {
+            fill: none;
+            stroke: var(--cyan);
+            stroke-width: 3;
+            stroke-dasharray: 500;
+            stroke-dashoffset: 500;
+            transition: stroke-dashoffset 2s ease;
+        }
+
+        .line-chart.animated path {
+            stroke-dashoffset: 0;
+        }
+
+        .line-chart .area {
+            fill: url(#line-gradient);
+            opacity: 0;
+            transition: opacity 1s ease 1s;
+        }
+
+        .line-chart.animated .area {
+            opacity: 0.3;
+        }
+
+        /* Progress ring */
+        .progress-ring-demo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-ring-demo svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-demo .progress {
+            stroke: var(--cyan);
+            stroke-width: 8;
+            fill: none;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            transition: stroke-dashoffset 1.5s var(--ease-out-expo);
+            stroke-linecap: round;
+        }
+
+        .progress-ring-demo .bg {
+            stroke: var(--text-dim);
+            stroke-width: 8;
+            fill: none;
+        }
+
+        .progress-ring-demo.animated .progress {
+            stroke-dashoffset: 70;
+        }
+
+        /* Counter */
+        .counter-demo {
+            font-family: var(--font-display);
+            font-size: 64px;
+            color: var(--cyan);
+            text-shadow: 0 0 30px var(--cyan-glow);
+        }
+
+        /* ============================================
+           8. IMAGE EFFECTS
+           ============================================ */
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--nebula), var(--surface));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        /* Ken Burns */
+        .ken-burns {
+            overflow: hidden;
+        }
+
+        .ken-burns .image-placeholder {
+            animation: ken-burns 10s ease infinite alternate;
+        }
+
+        @keyframes ken-burns {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.3) translate(-5%, -5%); }
+        }
+
+        /* Hover zoom */
+        .hover-zoom {
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+
+        .hover-zoom .image-placeholder {
+            transition: transform 0.5s ease;
+        }
+
+        .hover-zoom:hover .image-placeholder {
+            transform: scale(1.2);
+        }
+
+        /* Filter effects */
+        .filter-demo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .filter-item {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--cyan), var(--magenta));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            transition: filter 0.3s ease;
+        }
+
+        .filter-item.blur:hover { filter: blur(3px); }
+        .filter-item.grayscale:hover { filter: grayscale(100%); }
+        .filter-item.sepia:hover { filter: sepia(100%); }
+        .filter-item.invert:hover { filter: invert(100%); }
+        .filter-item.saturate:hover { filter: saturate(300%); }
+        .filter-item.hue:hover { filter: hue-rotate(180deg); }
+
+        /* ============================================
+           9. MICRO-INTERACTIONS
+           ============================================ */
+
+        /* Loading spinner */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--text-dim);
+            border-top-color: var(--cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success checkmark */
+        .checkmark {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--green);
+            position: relative;
+            transform: scale(0);
+            transition: transform 0.3s var(--ease-elastic);
+        }
+
+        .checkmark.show {
+            transform: scale(1);
+        }
+
+        .checkmark::after {
+            content: '';
+            position: absolute;
+            left: 22px;
+            top: 12px;
+            width: 12px;
+            height: 24px;
+            border: solid var(--void);
+            border-width: 0 4px 4px 0;
+            transform: rotate(45deg) scale(0);
+            transition: transform 0.2s ease 0.2s;
+        }
+
+        .checkmark.show::after {
+            transform: rotate(45deg) scale(1);
+        }
+
+        /* Error shake */
+        .shake-box {
+            padding: 20px 40px;
+            background: var(--nebula);
+            border: 2px solid var(--text-dim);
+            border-radius: 8px;
+            font-family: var(--font-display);
+            transition: border-color 0.2s ease;
+        }
+
+        .shake-box.error {
+            border-color: #ff4444;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        /* Notification toast */
+        .toast-container {
+            position: relative;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .toast {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: var(--green);
+            color: var(--void);
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 14px;
+            transform: translateX(150%);
+            transition: transform 0.3s var(--ease-out-expo);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* ============================================
+           10. ADVANCED
+           ============================================ */
+
+        /* SVG Morph */
+        .morph-demo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .morph-demo svg {
+            width: 100px;
+            height: 100px;
+        }
+
+        .morph-demo path {
+            fill: var(--cyan);
+            transition: d 0.5s ease;
+        }
+
+        /* Physics bounce */
+        .bounce-ball {
+            width: 40px;
+            height: 40px;
+            background: var(--amber);
+            border-radius: 50%;
+            animation: physics-bounce 1s ease infinite;
+        }
+
+        @keyframes physics-bounce {
+            0%, 100% {
+                transform: translateY(0);
+                animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+            }
+            50% {
+                transform: translateY(-80px);
+                animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+            }
+        }
+
+        /* Confetti (simplified) */
+        .confetti-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+        }
+
+        .confetti.active {
+            animation: confetti-fall 1s ease forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(200px) rotate(720deg);
+            }
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <h1>Animation Playground</h1>
+        <p>Interactive demos of web presentation effects</p>
+
+        <div class="nav-section">
+            <h3>Text Effects</h3>
+            <a href="#text-effects">All Text Effects</a>
+        </div>
+
+        <div class="nav-section">
+            <h3>Transitions</h3>
+            <a href="#page-transitions">Page Transitions</a>
+        </div>
+
+        <div class="nav-section">
+            <h3>Mouse Effects</h3>
+            <a href="#mouse-effects">Cursor & Hover</a>
+        </div>
+
+        <div class="nav-section">
+            <h3>Backgrounds</h3>
+            <a href="#backgrounds">Background Effects</a>
+        </div>
+
+        <div class="nav-section">
+            <h3>3D Effects</h3>
+            <a href="#3d-effects">3D Transforms</a>
+        </div>
+
+        <div class="nav-section">
+            <h3>Data Viz</h3>
+            <a href="#data-viz">Charts & Counters</a>
+        </div>
+
+        <div class="nav-section">
+            <h3>Images</h3>
+            <a href="#image-effects">Image Effects</a>
+        </div>
+
+        <div class="nav-section">
+            <h3>Micro-interactions</h3>
+            <a href="#micro">UI Feedback</a>
+        </div>
+
+        <div class="nav-section">
+            <h3>Advanced</h3>
+            <a href="#advanced">Physics & More</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- ==========================================
+             TEXT EFFECTS
+             ========================================== -->
+        <section class="section" id="text-effects">
+            <div class="section-header">
+                <h2>Text Effects</h2>
+                <p>Various ways to animate and style text for maximum impact in your presentations.</p>
+            </div>
+
+            <div class="demo-grid">
+                <!-- Typewriter -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="typewriter" id="typewriter">Hello, World!</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Typewriter</h4>
+                        <p>Text appears letter by letter with a blinking cursor, like someone typing in real-time.</p>
+                    </div>
+                </div>
+
+                <!-- Scramble -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="scramble-text" id="scramble">DECODED</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Text Scramble</h4>
+                        <p>Random characters resolve into readable text, like hacking scenes in movies.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="scrambleText()">Scramble</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gradient -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="gradient-text">GRADIENT</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Animated Gradient</h4>
+                        <p>Text filled with shifting color gradients that animate continuously.</p>
+                    </div>
+                </div>
+
+                <!-- Stroke -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="stroke-text">OUTLINE</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Stroke/Outline</h4>
+                        <p>Hollow text with just the outline. Hover to fill it in.</p>
+                    </div>
+                </div>
+
+                <!-- Glitch -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="glitch-text" data-text="GLITCH">GLITCH</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Glitch Effect</h4>
+                        <p>Text that jitters with RGB color separation for a digital glitch look.</p>
+                    </div>
+                </div>
+
+                <!-- Blur Reveal -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="blur-reveal" id="blur-text">REVEALED</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Blur Reveal</h4>
+                        <p>Text starts blurry and animates into sharp focus.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="toggleBlur()">Toggle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Split Text -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="split-text" id="split-text"><span>H</span><span>O</span><span>V</span><span>E</span><span>R</span><span> </span><span>M</span><span>E</span><span>!</span></div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Split Text Wave</h4>
+                        <p>Each letter animates independently, creating a wave effect on hover.</p>
+                    </div>
+                </div>
+
+                <!-- Highlight -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="highlight-text" id="highlight-text">This text gets highlighted</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Text Highlight</h4>
+                        <p>Background color "paints" behind text, like a highlighter marker.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="toggleHighlight()">Toggle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Variable Font -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="variable-font">Hover Me</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Variable Font</h4>
+                        <p>Font weight and spacing morph smoothly on hover.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PAGE TRANSITIONS
+             ========================================== -->
+        <section class="section" id="page-transitions">
+            <div class="section-header">
+                <h2>Page Transitions</h2>
+                <p>Different ways to transition between slides or pages in your presentation.</p>
+            </div>
+
+            <div class="demo-grid">
+                <!-- Wipe -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="transition-demo wipe-demo" id="wipe-demo">
+                            <div class="transition-slide a">Slide A</div>
+                            <div class="transition-slide b">Slide B</div>
+                        </div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Wipe Transition</h4>
+                        <p>New slide wipes across the screen from left to right.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="toggleTransition('wipe-demo')">Toggle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Circle -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="transition-demo circle-demo" id="circle-demo">
+                            <div class="transition-slide a">Slide A</div>
+                            <div class="transition-slide b">Slide B</div>
+                        </div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Circle Reveal</h4>
+                        <p>New slide expands from a circle in the center.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="toggleTransition('circle-demo')">Toggle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flip -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="transition-demo flip-demo" id="flip-demo">
+                            <div class="transition-slide a">Slide A</div>
+                            <div class="transition-slide b">Slide B</div>
+                        </div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>3D Flip</h4>
+                        <p>Slides flip like a card in 3D space.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="toggleTransition('flip-demo')">Toggle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zoom -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="transition-demo zoom-demo" id="zoom-demo">
+                            <div class="transition-slide a">Slide A</div>
+                            <div class="transition-slide b">Slide B</div>
+                        </div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Zoom Through</h4>
+                        <p>Current slide zooms out as new slide zooms in.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="toggleTransition('zoom-demo')">Toggle</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             MOUSE EFFECTS
+             ========================================== -->
+        <section class="section" id="mouse-effects">
+            <div class="section-header">
+                <h2>Mouse & Cursor Effects</h2>
+                <p>Interactive effects that respond to mouse movement and hover.</p>
+            </div>
+
+            <div class="demo-grid">
+                <!-- Spotlight -->
+                <div class="demo-card">
+                    <div class="demo-preview spotlight-demo" id="spotlight-demo">
+                        <div class="spotlight" id="spotlight"></div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Spotlight</h4>
+                        <p>A light follows your cursor, illuminating the dark background.</p>
+                    </div>
+                </div>
+
+                <!-- Ripple -->
+                <div class="demo-card">
+                    <div class="demo-preview ripple-demo" id="ripple-demo">
+                        Click anywhere
+                    </div>
+                    <div class="demo-info">
+                        <h4>Ripple Effect</h4>
+                        <p>Clicking creates an expanding ripple, like water.</p>
+                    </div>
+                </div>
+
+                <!-- Magnetic -->
+                <div class="demo-card">
+                    <div class="demo-preview magnetic-demo" id="magnetic-demo">
+                        <button class="magnetic-btn" id="magnetic-btn">Magnetic</button>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Magnetic Button</h4>
+                        <p>Button subtly pulls toward your cursor when nearby.</p>
+                    </div>
+                </div>
+
+                <!-- Tilt -->
+                <div class="demo-card">
+                    <div class="demo-preview" style="display: flex; align-items: center; justify-content: center;">
+                        <div class="tilt-demo-card" id="tilt-card">Tilt Me</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>3D Tilt</h4>
+                        <p>Card tilts in 3D space following your mouse position.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             BACKGROUNDS
+             ========================================== -->
+        <section class="section" id="backgrounds">
+            <div class="section-header">
+                <h2>Background Effects</h2>
+                <p>Atmospheric backgrounds that add depth and visual interest.</p>
+            </div>
+
+            <div class="demo-grid">
+                <!-- Gradient Mesh -->
+                <div class="demo-card">
+                    <div class="demo-preview gradient-mesh"></div>
+                    <div class="demo-info">
+                        <h4>Gradient Mesh</h4>
+                        <p>Animated blob-like gradients that shift and morph.</p>
+                    </div>
+                </div>
+
+                <!-- Noise -->
+                <div class="demo-card">
+                    <div class="demo-preview noise-bg">
+                        <span>Film Grain</span>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Noise/Grain Texture</h4>
+                        <p>Subtle film grain overlay adds texture and warmth.</p>
+                    </div>
+                </div>
+
+                <!-- Grid -->
+                <div class="demo-card">
+                    <div class="demo-preview grid-bg"></div>
+                    <div class="demo-info">
+                        <h4>Animated Grid</h4>
+                        <p>Moving grid pattern creates a tech/cyber aesthetic.</p>
+                    </div>
+                </div>
+
+                <!-- Waves -->
+                <div class="demo-card">
+                    <div class="demo-preview wave-bg" style="background: var(--void);">
+                        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                            <path d="M0,60 C150,120 350,0 600,60 C850,120 1050,0 1200,60 L1200,120 L0,120 Z" fill="var(--cyan-dim)"></path>
+                        </svg>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Wave Animation</h4>
+                        <p>Flowing wave pattern for a calm, organic feel.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             3D EFFECTS
+             ========================================== -->
+        <section class="section" id="3d-effects">
+            <div class="section-header">
+                <h2>3D Effects</h2>
+                <p>CSS 3D transforms for depth and dimension.</p>
+            </div>
+
+            <div class="demo-grid">
+                <!-- Flip Card -->
+                <div class="demo-card">
+                    <div class="demo-preview" style="display: flex; align-items: center; justify-content: center;">
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">Front</div>
+                                <div class="flip-card-back">Back!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Flip Card</h4>
+                        <p>Card flips to reveal content on the back. Hover to see.</p>
+                    </div>
+                </div>
+
+                <!-- Floating -->
+                <div class="demo-card">
+                    <div class="demo-preview" style="display: flex; align-items: center; justify-content: center;">
+                        <div class="float-element"></div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Floating Element</h4>
+                        <p>Element gently bobs up and down, creating a dreamy effect.</p>
+                    </div>
+                </div>
+
+                <!-- 3D Cube -->
+                <div class="demo-card">
+                    <div class="demo-preview" style="display: flex; align-items: center; justify-content: center;">
+                        <div class="cube-container">
+                            <div class="cube">
+                                <div class="cube-face front">1</div>
+                                <div class="cube-face back">2</div>
+                                <div class="cube-face left">3</div>
+                                <div class="cube-face right">4</div>
+                                <div class="cube-face top">5</div>
+                                <div class="cube-face bottom">6</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>3D Cube</h4>
+                        <p>Fully rotating 3D cube made with CSS transforms.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             DATA VISUALIZATION
+             ========================================== -->
+        <section class="section" id="data-viz">
+            <div class="section-header">
+                <h2>Data Visualization</h2>
+                <p>Animated charts and counters for presenting data.</p>
+            </div>
+
+            <div class="demo-grid">
+                <!-- Bar Chart -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="bar-chart" id="bar-chart">
+                            <div class="bar" style="height: 0;" data-height="60%"></div>
+                            <div class="bar" style="height: 0;" data-height="90%"></div>
+                            <div class="bar" style="height: 0;" data-height="45%"></div>
+                            <div class="bar" style="height: 0;" data-height="75%"></div>
+                            <div class="bar" style="height: 0;" data-height="100%"></div>
+                            <div class="bar" style="height: 0;" data-height="55%"></div>
+                        </div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Animated Bar Chart</h4>
+                        <p>Bars grow from zero to their values.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="animateBars()">Animate</button>
+                            <button class="btn secondary" onclick="resetBars()">Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Line Chart -->
+                <div class="demo-card">
+                    <div class="demo-preview">
+                        <div class="line-chart" id="line-chart">
+                            <svg viewBox="0 0 300 120">
+                                <defs>
+                                    <linearGradient id="line-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:var(--cyan);stop-opacity:0.5" />
+                                        <stop offset="100%" style="stop-color:var(--cyan);stop-opacity:0" />
+                                    </linearGradient>
+                                </defs>
+                                <path class="area" d="M0,100 L0,80 C50,60 100,90 150,50 C200,10 250,40 300,30 L300,100 Z"></path>
+                                <path d="M0,80 C50,60 100,90 150,50 C200,10 250,40 300,30"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Line Chart Draw</h4>
+                        <p>Line traces itself from left to right.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="animateLine()">Animate</button>
+                            <button class="btn secondary" onclick="resetLine()">Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Ring -->
+                <div class="demo-card">
+                    <div class="demo-preview progress-ring-demo" id="progress-ring">
+                        <svg width="100" height="100" viewBox="0 0 100 100">
+                            <circle class="bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="progress" cx="50" cy="50" r="45"></circle>
+                        </svg>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Progress Ring</h4>
+                        <p>Circular progress indicator that fills up.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="animateRing()">Animate</button>
+                            <button class="btn secondary" onclick="resetRing()">Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Counter -->
+                <div class="demo-card">
+                    <div class="demo-preview" style="display: flex; align-items: center; justify-content: center;">
+                        <div class="counter-demo" id="counter">0</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Counter Animation</h4>
+                        <p>Numbers count up smoothly to a target value.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="animateCounter()">Count to 1000</button>
+                            <button class="btn secondary" onclick="resetCounter()">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             IMAGE EFFECTS
+             ========================================== -->
+        <section class="section" id="image-effects">
+            <div class="section-header">
+                <h2>Image Effects</h2>
+                <p>Ways to animate and enhance images in presentations.</p>
+            </div>
+
+            <div class="demo-grid">
+                <!-- Ken Burns -->
+                <div class="demo-card">
+                    <div class="demo-preview ken-burns">
+                        <div class="image-placeholder">🏔️</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Ken Burns Effect</h4>
+                        <p>Slow zoom and pan, like in documentaries.</p>
+                    </div>
+                </div>
+
+                <!-- Hover Zoom -->
+                <div class="demo-card">
+                    <div class="demo-preview hover-zoom">
+                        <div class="image-placeholder">🌅</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Hover Zoom</h4>
+                        <p>Image zooms in when you hover over it.</p>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="demo-card">
+                    <div class="demo-preview filter-demo">
+                        <div class="filter-item blur">Blur</div>
+                        <div class="filter-item grayscale">Gray</div>
+                        <div class="filter-item sepia">Sepia</div>
+                        <div class="filter-item invert">Invert</div>
+                        <div class="filter-item saturate">Saturate</div>
+                        <div class="filter-item hue">Hue</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>CSS Filters</h4>
+                        <p>Hover each square to see different filter effects.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             MICRO-INTERACTIONS
+             ========================================== -->
+        <section class="section" id="micro">
+            <div class="section-header">
+                <h2>Micro-interactions</h2>
+                <p>Small UI feedback animations that make interfaces feel alive.</p>
+            </div>
+
+            <div class="demo-grid">
+                <!-- Spinner -->
+                <div class="demo-card">
+                    <div class="demo-preview" style="display: flex; align-items: center; justify-content: center;">
+                        <div class="spinner"></div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Loading Spinner</h4>
+                        <p>Simple spinning indicator while content loads.</p>
+                    </div>
+                </div>
+
+                <!-- Success -->
+                <div class="demo-card">
+                    <div class="demo-preview" style="display: flex; align-items: center; justify-content: center;">
+                        <div class="checkmark" id="checkmark"></div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Success Checkmark</h4>
+                        <p>Animated checkmark for successful actions.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="showCheckmark()">Show</button>
+                            <button class="btn secondary" onclick="hideCheckmark()">Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Shake -->
+                <div class="demo-card">
+                    <div class="demo-preview" style="display: flex; align-items: center; justify-content: center;">
+                        <div class="shake-box" id="shake-box">Error Box</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Error Shake</h4>
+                        <p>Element shakes to indicate an error.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="triggerShake()">Trigger Error</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Toast -->
+                <div class="demo-card">
+                    <div class="demo-preview toast-container" id="toast-container">
+                        <div class="toast" id="toast">✓ Saved successfully!</div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Toast Notification</h4>
+                        <p>Slide-in notification message.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="showToast()">Show Toast</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             ADVANCED
+             ========================================== -->
+        <section class="section" id="advanced">
+            <div class="section-header">
+                <h2>Advanced Effects</h2>
+                <p>More complex animations using physics and SVG.</p>
+            </div>
+
+            <div class="demo-grid">
+                <!-- Physics Bounce -->
+                <div class="demo-card">
+                    <div class="demo-preview" style="display: flex; align-items: flex-end; justify-content: center; padding-bottom: 30px;">
+                        <div class="bounce-ball"></div>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Physics Bounce</h4>
+                        <p>Realistic bouncing with proper easing curves.</p>
+                    </div>
+                </div>
+
+                <!-- SVG Morph -->
+                <div class="demo-card">
+                    <div class="demo-preview morph-demo" id="morph-demo">
+                        <svg viewBox="0 0 100 100">
+                            <path id="morph-path" d="M50,10 L90,90 L10,90 Z"></path>
+                        </svg>
+                    </div>
+                    <div class="demo-info">
+                        <h4>SVG Morph</h4>
+                        <p>Shape transforms smoothly into another shape.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="morphShape()">Morph</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confetti -->
+                <div class="demo-card">
+                    <div class="demo-preview confetti-container" id="confetti-container">
+                        <span style="font-family: var(--font-display); color: var(--text-secondary);">Click to celebrate!</span>
+                    </div>
+                    <div class="demo-info">
+                        <h4>Confetti</h4>
+                        <p>Burst of colorful confetti for celebrations.</p>
+                        <div class="demo-controls">
+                            <button class="btn" onclick="triggerConfetti()">Celebrate!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        /* ============================================
+           TEXT EFFECTS
+           ============================================ */
+
+        // Scramble text effect
+        function scrambleText() {
+            const el = document.getElementById('scramble');
+            const originalText = 'DECODED';
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%';
+            let iterations = 0;
+
+            const interval = setInterval(() => {
+                el.textContent = originalText
+                    .split('')
+                    .map((char, i) => {
+                        if (i < iterations) return originalText[i];
+                        return chars[Math.floor(Math.random() * chars.length)];
+                    })
+                    .join('');
+
+                iterations += 1/3;
+                if (iterations >= originalText.length) clearInterval(interval);
+            }, 30);
+        }
+
+        // Blur reveal toggle
+        function toggleBlur() {
+            document.getElementById('blur-text').classList.toggle('revealed');
+        }
+
+        // Highlight toggle
+        function toggleHighlight() {
+            document.getElementById('highlight-text').classList.toggle('active');
+        }
+
+        /* ============================================
+           PAGE TRANSITIONS
+           ============================================ */
+
+        function toggleTransition(id) {
+            document.getElementById(id).classList.toggle('active');
+        }
+
+        /* ============================================
+           MOUSE EFFECTS
+           ============================================ */
+
+        // Spotlight
+        const spotlightDemo = document.getElementById('spotlight-demo');
+        const spotlight = document.getElementById('spotlight');
+
+        spotlightDemo.addEventListener('mousemove', (e) => {
+            const rect = spotlightDemo.getBoundingClientRect();
+            spotlight.style.left = (e.clientX - rect.left) + 'px';
+            spotlight.style.top = (e.clientY - rect.top) + 'px';
+        });
+
+        // Ripple
+        const rippleDemo = document.getElementById('ripple-demo');
+        rippleDemo.addEventListener('click', (e) => {
+            const rect = rippleDemo.getBoundingClientRect();
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = (e.clientX - rect.left) + 'px';
+            ripple.style.top = (e.clientY - rect.top) + 'px';
+            rippleDemo.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+
+        // Magnetic button
+        const magneticBtn = document.getElementById('magnetic-btn');
+        const magneticDemo = document.getElementById('magnetic-demo');
+
+        magneticDemo.addEventListener('mousemove', (e) => {
+            const rect = magneticBtn.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const deltaX = e.clientX - centerX;
+            const deltaY = e.clientY - centerY;
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+            if (distance < 150) {
+                const force = (150 - distance) / 150;
+                magneticBtn.style.transform = `translate(${deltaX * force * 0.3}px, ${deltaY * force * 0.3}px)`;
+            }
+        });
+
+        magneticDemo.addEventListener('mouseleave', () => {
+            magneticBtn.style.transform = 'translate(0, 0)';
+        });
+
+        // Tilt card
+        const tiltCard = document.getElementById('tilt-card');
+        tiltCard.addEventListener('mousemove', (e) => {
+            const rect = tiltCard.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 5;
+            const rotateY = (centerX - x) / 5;
+            tiltCard.style.transform = `perspective(500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        tiltCard.addEventListener('mouseleave', () => {
+            tiltCard.style.transform = 'perspective(500px) rotateX(0) rotateY(0)';
+        });
+
+        /* ============================================
+           DATA VISUALIZATION
+           ============================================ */
+
+        // Bar chart
+        function animateBars() {
+            const bars = document.querySelectorAll('#bar-chart .bar');
+            bars.forEach((bar, i) => {
+                setTimeout(() => {
+                    bar.style.height = bar.dataset.height;
+                }, i * 100);
+            });
+        }
+
+        function resetBars() {
+            const bars = document.querySelectorAll('#bar-chart .bar');
+            bars.forEach(bar => bar.style.height = '0');
+        }
+
+        // Line chart
+        function animateLine() {
+            document.getElementById('line-chart').classList.add('animated');
+        }
+
+        function resetLine() {
+            document.getElementById('line-chart').classList.remove('animated');
+        }
+
+        // Progress ring
+        function animateRing() {
+            document.getElementById('progress-ring').classList.add('animated');
+        }
+
+        function resetRing() {
+            document.getElementById('progress-ring').classList.remove('animated');
+        }
+
+        // Counter
+        function animateCounter() {
+            const counter = document.getElementById('counter');
+            const target = 1000;
+            const duration = 2000;
+            const start = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                counter.textContent = Math.floor(easeOut * target);
+                if (progress < 1) requestAnimationFrame(update);
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        function resetCounter() {
+            document.getElementById('counter').textContent = '0';
+        }
+
+        /* ============================================
+           MICRO-INTERACTIONS
+           ============================================ */
+
+        // Checkmark
+        function showCheckmark() {
+            document.getElementById('checkmark').classList.add('show');
+        }
+
+        function hideCheckmark() {
+            document.getElementById('checkmark').classList.remove('show');
+        }
+
+        // Shake
+        function triggerShake() {
+            const box = document.getElementById('shake-box');
+            box.classList.add('error');
+            setTimeout(() => box.classList.remove('error'), 500);
+        }
+
+        // Toast
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        /* ============================================
+           ADVANCED
+           ============================================ */
+
+        // SVG Morph
+        let morphState = 'triangle';
+        function morphShape() {
+            const path = document.getElementById('morph-path');
+            if (morphState === 'triangle') {
+                path.style.d = 'path("M50,10 C80,10 90,50 90,50 C90,80 50,90 50,90 C20,90 10,50 10,50 C10,20 50,10 50,10")';
+                morphState = 'circle';
+            } else {
+                path.style.d = 'path("M50,10 L90,90 L10,90 Z")';
+                morphState = 'triangle';
+            }
+        }
+
+        // Confetti
+        function triggerConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#00f5ff', '#ffaa00', '#ff00aa', '#00ff88', '#ff4444'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '0';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.animationDuration = (Math.random() * 1 + 0.5) + 's';
+                container.appendChild(confetti);
+                confetti.classList.add('active');
+                setTimeout(() => confetti.remove(), 2000);
+            }
+        }
+
+        /* ============================================
+           INITIALIZE
+           ============================================ */
+
+        // Auto-trigger some effects on load for immediate impact
+        setTimeout(() => {
+            document.getElementById('blur-text').classList.add('revealed');
+        }, 1000);
+
+        setTimeout(() => {
+            document.getElementById('highlight-text').classList.add('active');
+        }, 1500);
+    </script>
+</body>
+</html>
+

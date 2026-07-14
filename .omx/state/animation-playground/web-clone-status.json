@@ -1,0 +1,16 @@
+{
+  "status": "completed",
+  "completed_at": "2026-07-14T20:56:00+08:00",
+  "local_url": "http://127.0.0.1:4173/index.html#3d-effects",
+  "verification": {
+    "sections": 9,
+    "buttons": 22,
+    "anchor_hash": "#advanced",
+    "representative_interactions": [
+      "scrambleText",
+      "toggleBlur",
+      "animateBars",
+      "showToast"
+    ]
+  }
+}
