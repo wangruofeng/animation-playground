@@ -11,7 +11,7 @@
 [![Bilingual](https://img.shields.io/badge/i18n-中文%20%2F%20English-7c3aed?style=flat-square)]()
 [![Runs Locally](https://img.shields.io/badge/Runs-Locally%20in%20Browser-22c55e?style=flat-square)]()
 
-🔗 **在线预览**:[https://playground.wangruofeng007.com](https://playground.wangruofeng007.com)
+🔗 **在线预览**:[https://playground.wangruofeng007.com/](https://playground.wangruofeng007.com/)
 
 </div>
 
