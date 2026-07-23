@@ -1,0 +1,7 @@
+{
+  "name": "animation-playground",
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "playground.wangruofeng007.com", "custom_domain": true }
+  ]
+}
