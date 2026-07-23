@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animation Playground - Web Presentation Effects</title>
     <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <style>
         /* ============================================
@@ -1126,59 +1127,230 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ============================================
+           SITE FOOTER
+           ============================================ */
+        .site-footer {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--cyan-dim);
+        }
+        .footer-top {
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--cyan-dim);
+        }
+        .footer-title {
+            font-family: var(--font-display);
+            font-size: 28px;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--cyan), var(--amber));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .footer-tagline {
+            margin-top: 8px;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .footer-support {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 40px;
+            padding: 40px 0;
+        }
+        .footer-heading {
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .footer-support-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .qr-row {
+            display: flex;
+            gap: 24px;
+        }
+        .qr-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .qr-thumb {
+            width: 72px;
+            height: 72px;
+            border-radius: 8px;
+            border: 1px solid var(--cyan-dim);
+            object-fit: cover;
+            cursor: zoom-in;
+            transition: border-color 0.2s ease;
+        }
+        .qr-thumb:hover { border-color: var(--cyan); }
+        .qr-meta { display: flex; flex-direction: column; }
+        .qr-meta strong {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .qr-meta span { font-size: 11px; color: var(--text-dim); }
+        .footer-social {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .footer-link {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-underline-offset: 4px;
+            transition: color 0.2s ease;
+        }
+        .footer-link:hover { color: var(--cyan); }
+        .footer-bottom {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: space-between;
+            padding-top: 20px;
+            border-top: 1px solid var(--cyan-dim);
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+        .qr-dialog {
+            /* 居中四件套：position:fixed + inset:0 + margin:auto + fit-content。
+               全局 * { margin:0 } 会把原生 dialog 默认的 margin:auto 重置掉，
+               导致 showModal() 后图片跑到左上角，故这里显式写齐确保整体居中。 */
+            position: fixed;
+            inset: 0;
+            margin: auto;
+            width: fit-content;
+            height: fit-content;
+            border: none;
+            background: transparent;
+            padding: 0;
+            max-width: 80vw;
+            max-height: 80vh;
+        }
+        .qr-dialog::backdrop { background: rgba(5, 5, 8, 0.85); }
+        .qr-dialog img {
+            display: block;
+            max-width: 80vw;
+            max-height: 80vh;
+            border-radius: 12px;
+            background: #fff;
+        }
+        @media (max-width: 900px) {
+            .footer-support { grid-template-columns: 1fr; }
+            .footer-support-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ============================================
+           LANGUAGE SWITCHER
+           ============================================ */
+        .lang-switcher {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 200;
+            display: flex;
+            gap: 4px;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--cyan-dim);
+            border-radius: 8px;
+            padding: 5px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .lang-btn {
+            font-family: var(--font-display);
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .lang-btn:hover {
+            color: var(--cyan);
+            border-color: var(--cyan-dim);
+        }
+        .lang-btn.active {
+            color: var(--void);
+            background: var(--cyan);
+        }
+        @media (max-width: 900px) {
+            .lang-switcher { top: 10px; right: 10px; }
+        }
     </style>
 </head>
 <body>
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
-        <h1>Animation Playground</h1>
-        <p>Interactive demos of web presentation effects</p>
+        <h1 data-i18n="site.title">Animation Playground</h1>
+        <p data-i18n="sidebar.tagline">Interactive demos of web presentation effects</p>
 
         <div class="nav-section">
-            <h3>Text Effects</h3>
-            <a href="#text-effects">All Text Effects</a>
+            <h3 data-i18n="nav.textEffects">Text Effects</h3>
+            <a href="#text-effects" data-i18n="nav.textEffects.link">All Text Effects</a>
         </div>
 
         <div class="nav-section">
-            <h3>Transitions</h3>
-            <a href="#page-transitions">Page Transitions</a>
+            <h3 data-i18n="nav.transitions">Transitions</h3>
+            <a href="#page-transitions" data-i18n="nav.transitions.link">Page Transitions</a>
         </div>
 
         <div class="nav-section">
-            <h3>Mouse Effects</h3>
-            <a href="#mouse-effects">Cursor & Hover</a>
+            <h3 data-i18n="nav.mouse">Mouse Effects</h3>
+            <a href="#mouse-effects" data-i18n="nav.mouse.link">Cursor & Hover</a>
         </div>
 
         <div class="nav-section">
-            <h3>Backgrounds</h3>
-            <a href="#backgrounds">Background Effects</a>
+            <h3 data-i18n="nav.backgrounds">Backgrounds</h3>
+            <a href="#backgrounds" data-i18n="nav.backgrounds.link">Background Effects</a>
         </div>
 
         <div class="nav-section">
-            <h3>3D Effects</h3>
-            <a href="#3d-effects">3D Transforms</a>
+            <h3 data-i18n="nav.3d">3D Effects</h3>
+            <a href="#3d-effects" data-i18n="nav.3d.link">3D Transforms</a>
         </div>
 
         <div class="nav-section">
-            <h3>Data Viz</h3>
-            <a href="#data-viz">Charts & Counters</a>
+            <h3 data-i18n="nav.dataViz">Data Viz</h3>
+            <a href="#data-viz" data-i18n="nav.dataViz.link">Charts & Counters</a>
         </div>
 
         <div class="nav-section">
-            <h3>Images</h3>
-            <a href="#image-effects">Image Effects</a>
+            <h3 data-i18n="nav.images">Images</h3>
+            <a href="#image-effects" data-i18n="nav.images.link">Image Effects</a>
         </div>
 
         <div class="nav-section">
-            <h3>Micro-interactions</h3>
-            <a href="#micro">UI Feedback</a>
+            <h3 data-i18n="nav.micro">Micro-interactions</h3>
+            <a href="#micro" data-i18n="nav.micro.link">UI Feedback</a>
         </div>
 
         <div class="nav-section">
-            <h3>Advanced</h3>
-            <a href="#advanced">Physics & More</a>
+            <h3 data-i18n="nav.advanced">Advanced</h3>
+            <a href="#advanced" data-i18n="nav.advanced.link">Physics & More</a>
         </div>
     </nav>
+
+    <!-- Language Switcher -->
+    <div class="lang-switcher" role="group" aria-label="Language">
+        <button class="lang-btn" type="button" data-lang="en" onclick="applyLang('en')">EN</button>
+        <button class="lang-btn" type="button" data-lang="zh" onclick="applyLang('zh')">简中</button>
+        <button class="lang-btn" type="button" data-lang="tw" onclick="applyLang('tw')">繁中</button>
+    </div>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -1188,8 +1360,8 @@
              ========================================== -->
         <section class="section" id="text-effects">
             <div class="section-header">
-                <h2>Text Effects</h2>
-                <p>Various ways to animate and style text for maximum impact in your presentations.</p>
+                <h2 data-i18n="sec.text.title">Text Effects</h2>
+                <p data-i18n="sec.text.desc">Various ways to animate and style text for maximum impact in your presentations.</p>
             </div>
 
             <div class="demo-grid">
@@ -1199,8 +1371,8 @@
                         <div class="typewriter" id="typewriter">Hello, World!</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Typewriter</h4>
-                        <p>Text appears letter by letter with a blinking cursor, like someone typing in real-time.</p>
+                        <h4 data-i18n="card.typewriter.title">Typewriter</h4>
+                        <p data-i18n="card.typewriter.desc">Text appears letter by letter with a blinking cursor, like someone typing in real-time.</p>
                     </div>
                 </div>
 
@@ -1210,10 +1382,10 @@
                         <div class="scramble-text" id="scramble">DECODED</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Text Scramble</h4>
-                        <p>Random characters resolve into readable text, like hacking scenes in movies.</p>
+                        <h4 data-i18n="card.scramble.title">Text Scramble</h4>
+                        <p data-i18n="card.scramble.desc">Random characters resolve into readable text, like hacking scenes in movies.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="scrambleText()">Scramble</button>
+                            <button class="btn" onclick="scrambleText()" data-i18n="btn.scramble">Scramble</button>
                         </div>
                     </div>
                 </div>
@@ -1224,8 +1396,8 @@
                         <div class="gradient-text">GRADIENT</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Animated Gradient</h4>
-                        <p>Text filled with shifting color gradients that animate continuously.</p>
+                        <h4 data-i18n="card.gradient.title">Animated Gradient</h4>
+                        <p data-i18n="card.gradient.desc">Text filled with shifting color gradients that animate continuously.</p>
                     </div>
                 </div>
 
@@ -1235,8 +1407,8 @@
                         <div class="stroke-text">OUTLINE</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Stroke/Outline</h4>
-                        <p>Hollow text with just the outline. Hover to fill it in.</p>
+                        <h4 data-i18n="card.stroke.title">Stroke/Outline</h4>
+                        <p data-i18n="card.stroke.desc">Hollow text with just the outline. Hover to fill it in.</p>
                     </div>
                 </div>
 
@@ -1246,8 +1418,8 @@
                         <div class="glitch-text" data-text="GLITCH">GLITCH</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Glitch Effect</h4>
-                        <p>Text that jitters with RGB color separation for a digital glitch look.</p>
+                        <h4 data-i18n="card.glitch.title">Glitch Effect</h4>
+                        <p data-i18n="card.glitch.desc">Text that jitters with RGB color separation for a digital glitch look.</p>
                     </div>
                 </div>
 
@@ -1257,10 +1429,10 @@
                         <div class="blur-reveal" id="blur-text">REVEALED</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Blur Reveal</h4>
-                        <p>Text starts blurry and animates into sharp focus.</p>
+                        <h4 data-i18n="card.blur.title">Blur Reveal</h4>
+                        <p data-i18n="card.blur.desc">Text starts blurry and animates into sharp focus.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="toggleBlur()">Toggle</button>
+                            <button class="btn" onclick="toggleBlur()" data-i18n="btn.toggle">Toggle</button>
                         </div>
                     </div>
                 </div>
@@ -1271,8 +1443,8 @@
                         <div class="split-text" id="split-text"><span>H</span><span>O</span><span>V</span><span>E</span><span>R</span><span> </span><span>M</span><span>E</span><span>!</span></div>
                     </div>
                     <div class="demo-info">
-                        <h4>Split Text Wave</h4>
-                        <p>Each letter animates independently, creating a wave effect on hover.</p>
+                        <h4 data-i18n="card.split.title">Split Text Wave</h4>
+                        <p data-i18n="card.split.desc">Each letter animates independently, creating a wave effect on hover.</p>
                     </div>
                 </div>
 
@@ -1282,10 +1454,10 @@
                         <div class="highlight-text" id="highlight-text">This text gets highlighted</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Text Highlight</h4>
-                        <p>Background color "paints" behind text, like a highlighter marker.</p>
+                        <h4 data-i18n="card.highlight.title">Text Highlight</h4>
+                        <p data-i18n="card.highlight.desc">Background color "paints" behind text, like a highlighter marker.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="toggleHighlight()">Toggle</button>
+                            <button class="btn" onclick="toggleHighlight()" data-i18n="btn.toggle">Toggle</button>
                         </div>
                     </div>
                 </div>
@@ -1296,8 +1468,8 @@
                         <div class="variable-font">Hover Me</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Variable Font</h4>
-                        <p>Font weight and spacing morph smoothly on hover.</p>
+                        <h4 data-i18n="card.variable.title">Variable Font</h4>
+                        <p data-i18n="card.variable.desc">Font weight and spacing morph smoothly on hover.</p>
                     </div>
                 </div>
             </div>
@@ -1308,8 +1480,8 @@
              ========================================== -->
         <section class="section" id="page-transitions">
             <div class="section-header">
-                <h2>Page Transitions</h2>
-                <p>Different ways to transition between slides or pages in your presentation.</p>
+                <h2 data-i18n="sec.transitions.title">Page Transitions</h2>
+                <p data-i18n="sec.transitions.desc">Different ways to transition between slides or pages in your presentation.</p>
             </div>
 
             <div class="demo-grid">
@@ -1322,10 +1494,10 @@
                         </div>
                     </div>
                     <div class="demo-info">
-                        <h4>Wipe Transition</h4>
-                        <p>New slide wipes across the screen from left to right.</p>
+                        <h4 data-i18n="card.wipe.title">Wipe Transition</h4>
+                        <p data-i18n="card.wipe.desc">New slide wipes across the screen from left to right.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="toggleTransition('wipe-demo')">Toggle</button>
+                            <button class="btn" onclick="toggleTransition('wipe-demo')" data-i18n="btn.toggle">Toggle</button>
                         </div>
                     </div>
                 </div>
@@ -1339,10 +1511,10 @@
                         </div>
                     </div>
                     <div class="demo-info">
-                        <h4>Circle Reveal</h4>
-                        <p>New slide expands from a circle in the center.</p>
+                        <h4 data-i18n="card.circle.title">Circle Reveal</h4>
+                        <p data-i18n="card.circle.desc">New slide expands from a circle in the center.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="toggleTransition('circle-demo')">Toggle</button>
+                            <button class="btn" onclick="toggleTransition('circle-demo')" data-i18n="btn.toggle">Toggle</button>
                         </div>
                     </div>
                 </div>
@@ -1356,10 +1528,10 @@
                         </div>
                     </div>
                     <div class="demo-info">
-                        <h4>3D Flip</h4>
-                        <p>Slides flip like a card in 3D space.</p>
+                        <h4 data-i18n="card.flip.title">3D Flip</h4>
+                        <p data-i18n="card.flip.desc">Slides flip like a card in 3D space.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="toggleTransition('flip-demo')">Toggle</button>
+                            <button class="btn" onclick="toggleTransition('flip-demo')" data-i18n="btn.toggle">Toggle</button>
                         </div>
                     </div>
                 </div>
@@ -1373,10 +1545,10 @@
                         </div>
                     </div>
                     <div class="demo-info">
-                        <h4>Zoom Through</h4>
-                        <p>Current slide zooms out as new slide zooms in.</p>
+                        <h4 data-i18n="card.zoom.title">Zoom Through</h4>
+                        <p data-i18n="card.zoom.desc">Current slide zooms out as new slide zooms in.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="toggleTransition('zoom-demo')">Toggle</button>
+                            <button class="btn" onclick="toggleTransition('zoom-demo')" data-i18n="btn.toggle">Toggle</button>
                         </div>
                     </div>
                 </div>
@@ -1388,8 +1560,8 @@
              ========================================== -->
         <section class="section" id="mouse-effects">
             <div class="section-header">
-                <h2>Mouse & Cursor Effects</h2>
-                <p>Interactive effects that respond to mouse movement and hover.</p>
+                <h2 data-i18n="sec.mouse.title">Mouse & Cursor Effects</h2>
+                <p data-i18n="sec.mouse.desc">Interactive effects that respond to mouse movement and hover.</p>
             </div>
 
             <div class="demo-grid">
@@ -1399,8 +1571,8 @@
                         <div class="spotlight" id="spotlight"></div>
                     </div>
                     <div class="demo-info">
-                        <h4>Spotlight</h4>
-                        <p>A light follows your cursor, illuminating the dark background.</p>
+                        <h4 data-i18n="card.spotlight.title">Spotlight</h4>
+                        <p data-i18n="card.spotlight.desc">A light follows your cursor, illuminating the dark background.</p>
                     </div>
                 </div>
 
@@ -1410,8 +1582,8 @@
                         Click anywhere
                     </div>
                     <div class="demo-info">
-                        <h4>Ripple Effect</h4>
-                        <p>Clicking creates an expanding ripple, like water.</p>
+                        <h4 data-i18n="card.ripple.title">Ripple Effect</h4>
+                        <p data-i18n="card.ripple.desc">Clicking creates an expanding ripple, like water.</p>
                     </div>
                 </div>
 
@@ -1421,8 +1593,8 @@
                         <button class="magnetic-btn" id="magnetic-btn">Magnetic</button>
                     </div>
                     <div class="demo-info">
-                        <h4>Magnetic Button</h4>
-                        <p>Button subtly pulls toward your cursor when nearby.</p>
+                        <h4 data-i18n="card.magnetic.title">Magnetic Button</h4>
+                        <p data-i18n="card.magnetic.desc">Button subtly pulls toward your cursor when nearby.</p>
                     </div>
                 </div>
 
@@ -1432,8 +1604,8 @@
                         <div class="tilt-demo-card" id="tilt-card">Tilt Me</div>
                     </div>
                     <div class="demo-info">
-                        <h4>3D Tilt</h4>
-                        <p>Card tilts in 3D space following your mouse position.</p>
+                        <h4 data-i18n="card.tilt.title">3D Tilt</h4>
+                        <p data-i18n="card.tilt.desc">Card tilts in 3D space following your mouse position.</p>
                     </div>
                 </div>
             </div>
@@ -1444,8 +1616,8 @@
              ========================================== -->
         <section class="section" id="backgrounds">
             <div class="section-header">
-                <h2>Background Effects</h2>
-                <p>Atmospheric backgrounds that add depth and visual interest.</p>
+                <h2 data-i18n="sec.backgrounds.title">Background Effects</h2>
+                <p data-i18n="sec.backgrounds.desc">Atmospheric backgrounds that add depth and visual interest.</p>
             </div>
 
             <div class="demo-grid">
@@ -1453,8 +1625,8 @@
                 <div class="demo-card">
                     <div class="demo-preview gradient-mesh"></div>
                     <div class="demo-info">
-                        <h4>Gradient Mesh</h4>
-                        <p>Animated blob-like gradients that shift and morph.</p>
+                        <h4 data-i18n="card.mesh.title">Gradient Mesh</h4>
+                        <p data-i18n="card.mesh.desc">Animated blob-like gradients that shift and morph.</p>
                     </div>
                 </div>
 
@@ -1464,8 +1636,8 @@
                         <span>Film Grain</span>
                     </div>
                     <div class="demo-info">
-                        <h4>Noise/Grain Texture</h4>
-                        <p>Subtle film grain overlay adds texture and warmth.</p>
+                        <h4 data-i18n="card.noise.title">Noise/Grain Texture</h4>
+                        <p data-i18n="card.noise.desc">Subtle film grain overlay adds texture and warmth.</p>
                     </div>
                 </div>
 
@@ -1473,8 +1645,8 @@
                 <div class="demo-card">
                     <div class="demo-preview grid-bg"></div>
                     <div class="demo-info">
-                        <h4>Animated Grid</h4>
-                        <p>Moving grid pattern creates a tech/cyber aesthetic.</p>
+                        <h4 data-i18n="card.grid.title">Animated Grid</h4>
+                        <p data-i18n="card.grid.desc">Moving grid pattern creates a tech/cyber aesthetic.</p>
                     </div>
                 </div>
 
@@ -1486,8 +1658,8 @@
                         </svg>
                     </div>
                     <div class="demo-info">
-                        <h4>Wave Animation</h4>
-                        <p>Flowing wave pattern for a calm, organic feel.</p>
+                        <h4 data-i18n="card.wave.title">Wave Animation</h4>
+                        <p data-i18n="card.wave.desc">Flowing wave pattern for a calm, organic feel.</p>
                     </div>
                 </div>
             </div>
@@ -1498,8 +1670,8 @@
              ========================================== -->
         <section class="section" id="3d-effects">
             <div class="section-header">
-                <h2>3D Effects</h2>
-                <p>CSS 3D transforms for depth and dimension.</p>
+                <h2 data-i18n="sec.3d.title">3D Effects</h2>
+                <p data-i18n="sec.3d.desc">CSS 3D transforms for depth and dimension.</p>
             </div>
 
             <div class="demo-grid">
@@ -1514,8 +1686,8 @@
                         </div>
                     </div>
                     <div class="demo-info">
-                        <h4>Flip Card</h4>
-                        <p>Card flips to reveal content on the back. Hover to see.</p>
+                        <h4 data-i18n="card.flipCard.title">Flip Card</h4>
+                        <p data-i18n="card.flipCard.desc">Card flips to reveal content on the back. Hover to see.</p>
                     </div>
                 </div>
 
@@ -1525,8 +1697,8 @@
                         <div class="float-element"></div>
                     </div>
                     <div class="demo-info">
-                        <h4>Floating Element</h4>
-                        <p>Element gently bobs up and down, creating a dreamy effect.</p>
+                        <h4 data-i18n="card.floating.title">Floating Element</h4>
+                        <p data-i18n="card.floating.desc">Element gently bobs up and down, creating a dreamy effect.</p>
                     </div>
                 </div>
 
@@ -1545,8 +1717,8 @@
                         </div>
                     </div>
                     <div class="demo-info">
-                        <h4>3D Cube</h4>
-                        <p>Fully rotating 3D cube made with CSS transforms.</p>
+                        <h4 data-i18n="card.cube.title">3D Cube</h4>
+                        <p data-i18n="card.cube.desc">Fully rotating 3D cube made with CSS transforms.</p>
                     </div>
                 </div>
             </div>
@@ -1557,8 +1729,8 @@
              ========================================== -->
         <section class="section" id="data-viz">
             <div class="section-header">
-                <h2>Data Visualization</h2>
-                <p>Animated charts and counters for presenting data.</p>
+                <h2 data-i18n="sec.dataViz.title">Data Visualization</h2>
+                <p data-i18n="sec.dataViz.desc">Animated charts and counters for presenting data.</p>
             </div>
 
             <div class="demo-grid">
@@ -1575,11 +1747,11 @@
                         </div>
                     </div>
                     <div class="demo-info">
-                        <h4>Animated Bar Chart</h4>
-                        <p>Bars grow from zero to their values.</p>
+                        <h4 data-i18n="card.bar.title">Animated Bar Chart</h4>
+                        <p data-i18n="card.bar.desc">Bars grow from zero to their values.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="animateBars()">Animate</button>
-                            <button class="btn secondary" onclick="resetBars()">Reset</button>
+                            <button class="btn" onclick="animateBars()" data-i18n="btn.animate">Animate</button>
+                            <button class="btn secondary" onclick="resetBars()" data-i18n="btn.reset">Reset</button>
                         </div>
                     </div>
                 </div>
@@ -1601,11 +1773,11 @@
                         </div>
                     </div>
                     <div class="demo-info">
-                        <h4>Line Chart Draw</h4>
-                        <p>Line traces itself from left to right.</p>
+                        <h4 data-i18n="card.line.title">Line Chart Draw</h4>
+                        <p data-i18n="card.line.desc">Line traces itself from left to right.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="animateLine()">Animate</button>
-                            <button class="btn secondary" onclick="resetLine()">Reset</button>
+                            <button class="btn" onclick="animateLine()" data-i18n="btn.animate">Animate</button>
+                            <button class="btn secondary" onclick="resetLine()" data-i18n="btn.reset">Reset</button>
                         </div>
                     </div>
                 </div>
@@ -1619,11 +1791,11 @@
                         </svg>
                     </div>
                     <div class="demo-info">
-                        <h4>Progress Ring</h4>
-                        <p>Circular progress indicator that fills up.</p>
+                        <h4 data-i18n="card.ring.title">Progress Ring</h4>
+                        <p data-i18n="card.ring.desc">Circular progress indicator that fills up.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="animateRing()">Animate</button>
-                            <button class="btn secondary" onclick="resetRing()">Reset</button>
+                            <button class="btn" onclick="animateRing()" data-i18n="btn.animate">Animate</button>
+                            <button class="btn secondary" onclick="resetRing()" data-i18n="btn.reset">Reset</button>
                         </div>
                     </div>
                 </div>
@@ -1634,11 +1806,11 @@
                         <div class="counter-demo" id="counter">0</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Counter Animation</h4>
-                        <p>Numbers count up smoothly to a target value.</p>
+                        <h4 data-i18n="card.counter.title">Counter Animation</h4>
+                        <p data-i18n="card.counter.desc">Numbers count up smoothly to a target value.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="animateCounter()">Count to 1000</button>
-                            <button class="btn secondary" onclick="resetCounter()">Reset</button>
+                            <button class="btn" onclick="animateCounter()" data-i18n="btn.count">Count to 1000</button>
+                            <button class="btn secondary" onclick="resetCounter()" data-i18n="btn.reset">Reset</button>
                         </div>
                     </div>
                 </div>
@@ -1650,8 +1822,8 @@
              ========================================== -->
         <section class="section" id="image-effects">
             <div class="section-header">
-                <h2>Image Effects</h2>
-                <p>Ways to animate and enhance images in presentations.</p>
+                <h2 data-i18n="sec.images.title">Image Effects</h2>
+                <p data-i18n="sec.images.desc">Ways to animate and enhance images in presentations.</p>
             </div>
 
             <div class="demo-grid">
@@ -1661,8 +1833,8 @@
                         <div class="image-placeholder">🏔️</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Ken Burns Effect</h4>
-                        <p>Slow zoom and pan, like in documentaries.</p>
+                        <h4 data-i18n="card.kenBurns.title">Ken Burns Effect</h4>
+                        <p data-i18n="card.kenBurns.desc">Slow zoom and pan, like in documentaries.</p>
                     </div>
                 </div>
 
@@ -1672,8 +1844,8 @@
                         <div class="image-placeholder">🌅</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Hover Zoom</h4>
-                        <p>Image zooms in when you hover over it.</p>
+                        <h4 data-i18n="card.hoverZoom.title">Hover Zoom</h4>
+                        <p data-i18n="card.hoverZoom.desc">Image zooms in when you hover over it.</p>
                     </div>
                 </div>
 
@@ -1688,8 +1860,8 @@
                         <div class="filter-item hue">Hue</div>
                     </div>
                     <div class="demo-info">
-                        <h4>CSS Filters</h4>
-                        <p>Hover each square to see different filter effects.</p>
+                        <h4 data-i18n="card.filters.title">CSS Filters</h4>
+                        <p data-i18n="card.filters.desc">Hover each square to see different filter effects.</p>
                     </div>
                 </div>
             </div>
@@ -1700,8 +1872,8 @@
              ========================================== -->
         <section class="section" id="micro">
             <div class="section-header">
-                <h2>Micro-interactions</h2>
-                <p>Small UI feedback animations that make interfaces feel alive.</p>
+                <h2 data-i18n="sec.micro.title">Micro-interactions</h2>
+                <p data-i18n="sec.micro.desc">Small UI feedback animations that make interfaces feel alive.</p>
             </div>
 
             <div class="demo-grid">
@@ -1711,8 +1883,8 @@
                         <div class="spinner"></div>
                     </div>
                     <div class="demo-info">
-                        <h4>Loading Spinner</h4>
-                        <p>Simple spinning indicator while content loads.</p>
+                        <h4 data-i18n="card.spinner.title">Loading Spinner</h4>
+                        <p data-i18n="card.spinner.desc">Simple spinning indicator while content loads.</p>
                     </div>
                 </div>
 
@@ -1722,11 +1894,11 @@
                         <div class="checkmark" id="checkmark"></div>
                     </div>
                     <div class="demo-info">
-                        <h4>Success Checkmark</h4>
-                        <p>Animated checkmark for successful actions.</p>
+                        <h4 data-i18n="card.checkmark.title">Success Checkmark</h4>
+                        <p data-i18n="card.checkmark.desc">Animated checkmark for successful actions.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="showCheckmark()">Show</button>
-                            <button class="btn secondary" onclick="hideCheckmark()">Reset</button>
+                            <button class="btn" onclick="showCheckmark()" data-i18n="btn.show">Show</button>
+                            <button class="btn secondary" onclick="hideCheckmark()" data-i18n="btn.reset">Reset</button>
                         </div>
                     </div>
                 </div>
@@ -1737,10 +1909,10 @@
                         <div class="shake-box" id="shake-box">Error Box</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Error Shake</h4>
-                        <p>Element shakes to indicate an error.</p>
+                        <h4 data-i18n="card.shake.title">Error Shake</h4>
+                        <p data-i18n="card.shake.desc">Element shakes to indicate an error.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="triggerShake()">Trigger Error</button>
+                            <button class="btn" onclick="triggerShake()" data-i18n="btn.triggerError">Trigger Error</button>
                         </div>
                     </div>
                 </div>
@@ -1751,10 +1923,10 @@
                         <div class="toast" id="toast">✓ Saved successfully!</div>
                     </div>
                     <div class="demo-info">
-                        <h4>Toast Notification</h4>
-                        <p>Slide-in notification message.</p>
+                        <h4 data-i18n="card.toast.title">Toast Notification</h4>
+                        <p data-i18n="card.toast.desc">Slide-in notification message.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="showToast()">Show Toast</button>
+                            <button class="btn" onclick="showToast()" data-i18n="btn.showToast">Show Toast</button>
                         </div>
                     </div>
                 </div>
@@ -1766,8 +1938,8 @@
              ========================================== -->
         <section class="section" id="advanced">
             <div class="section-header">
-                <h2>Advanced Effects</h2>
-                <p>More complex animations using physics and SVG.</p>
+                <h2 data-i18n="sec.advanced.title">Advanced Effects</h2>
+                <p data-i18n="sec.advanced.desc">More complex animations using physics and SVG.</p>
             </div>
 
             <div class="demo-grid">
@@ -1777,8 +1949,8 @@
                         <div class="bounce-ball"></div>
                     </div>
                     <div class="demo-info">
-                        <h4>Physics Bounce</h4>
-                        <p>Realistic bouncing with proper easing curves.</p>
+                        <h4 data-i18n="card.bounce.title">Physics Bounce</h4>
+                        <p data-i18n="card.bounce.desc">Realistic bouncing with proper easing curves.</p>
                     </div>
                 </div>
 
@@ -1790,10 +1962,10 @@
                         </svg>
                     </div>
                     <div class="demo-info">
-                        <h4>SVG Morph</h4>
-                        <p>Shape transforms smoothly into another shape.</p>
+                        <h4 data-i18n="card.morph.title">SVG Morph</h4>
+                        <p data-i18n="card.morph.desc">Shape transforms smoothly into another shape.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="morphShape()">Morph</button>
+                            <button class="btn" onclick="morphShape()" data-i18n="btn.morph">Morph</button>
                         </div>
                     </div>
                 </div>
@@ -1804,19 +1976,311 @@
                         <span style="font-family: var(--font-display); color: var(--text-secondary);">Click to celebrate!</span>
                     </div>
                     <div class="demo-info">
-                        <h4>Confetti</h4>
-                        <p>Burst of colorful confetti for celebrations.</p>
+                        <h4 data-i18n="card.confetti.title">Confetti</h4>
+                        <p data-i18n="card.confetti.desc">Burst of colorful confetti for celebrations.</p>
                         <div class="demo-controls">
-                            <button class="btn" onclick="triggerConfetti()">Celebrate!</button>
+                            <button class="btn" onclick="triggerConfetti()" data-i18n="btn.celebrate">Celebrate!</button>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
+    <!-- ==========================================
+         SITE FOOTER
+         ============================================ -->
+    <footer class="site-footer">
+        <div class="footer-top">
+            <div class="footer-title" data-i18n="site.title">Animation Playground</div>
+            <p class="footer-tagline" data-i18n="sidebar.tagline">Interactive demos of web presentation effects</p>
+        </div>
+
+        <div class="footer-support">
+            <div class="footer-heading" data-i18n="footer.heading">关注与支持</div>
+            <div class="footer-support-grid">
+                <div class="qr-row">
+                    <div class="qr-item">
+                        <img class="qr-thumb" src="/wechat-qr.png" alt="微信二维码" data-i18n-alt="footer.alt.wechat" onclick="document.getElementById('qr-wechat').showModal()" />
+                        <div class="qr-meta"><strong data-i18n="footer.wechat.strong">微信</strong><span data-i18n="footer.wechat.span">关注公众号</span></div>
+                    </div>
+                    <div class="qr-item">
+                        <img class="qr-thumb" src="/reward-qr.png" alt="打赏二维码" data-i18n-alt="footer.alt.reward" onclick="document.getElementById('qr-reward').showModal()" />
+                        <div class="qr-meta"><strong data-i18n="footer.coffee.strong">请作者喝杯咖啡</strong><span data-i18n="footer.coffee.span">打赏支持</span></div>
+                    </div>
+                </div>
+                <div class="footer-social">
+                    <a class="footer-link" href="https://x.com/oneruofeng" target="_blank" rel="noreferrer">X · @oneruofeng</a>
+                    <a class="footer-link" href="https://github.com/wangruofeng/animation-playground" target="_blank" rel="noreferrer">GitHub · @wangruofeng</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>
+                <a class="footer-link" href="https://github.com/wangruofeng/animation-playground" target="_blank" rel="noreferrer">GitHub</a>
+                <span data-i18n="footer.poweredBy"> · Powered by </span>
+                <a class="footer-link" href="https://wangruofeng007.com/" target="_blank" rel="noreferrer" data-i18n="footer.author">王若风</a>
+            </span>
+            <span><span data-i18n="site.title">Animation Playground</span> · <span data-i18n="footer.note">所有演示均在浏览器本地实时运行</span></span>
+        </div>
+    </footer>
+
+    <!-- 二维码放大弹窗：点击遮罩或按 Esc 关闭 -->
+    <dialog id="qr-wechat" class="qr-dialog" onclick="if(event.target===this)this.close()">
+        <img src="/wechat-qr.png" alt="微信二维码" data-i18n-alt="footer.alt.wechat" />
+    </dialog>
+    <dialog id="qr-reward" class="qr-dialog" onclick="if(event.target===this)this.close()">
+        <img src="/reward-qr.png" alt="打赏二维码" data-i18n-alt="footer.alt.reward" />
+    </dialog>
     </main>
 
     <script>
+        /* ============================================
+           I18N — 多语言（EN / 简中 / 繁中）
+           预览区展示词（GRADIENT / DECODED / 滤镜标签 等）保持英文，不在此翻译。
+           ============================================ */
+        const I18N = {
+            en: {
+                'page.title': 'Animation Playground - Web Presentation Effects',
+                'site.title': 'Animation Playground',
+                'sidebar.tagline': 'Interactive demos of web presentation effects',
+                'nav.textEffects': 'Text Effects', 'nav.textEffects.link': 'All Text Effects',
+                'nav.transitions': 'Transitions', 'nav.transitions.link': 'Page Transitions',
+                'nav.mouse': 'Mouse Effects', 'nav.mouse.link': 'Cursor & Hover',
+                'nav.backgrounds': 'Backgrounds', 'nav.backgrounds.link': 'Background Effects',
+                'nav.3d': '3D Effects', 'nav.3d.link': '3D Transforms',
+                'nav.dataViz': 'Data Viz', 'nav.dataViz.link': 'Charts & Counters',
+                'nav.images': 'Images', 'nav.images.link': 'Image Effects',
+                'nav.micro': 'Micro-interactions', 'nav.micro.link': 'UI Feedback',
+                'nav.advanced': 'Advanced', 'nav.advanced.link': 'Physics & More',
+                'sec.text.title': 'Text Effects', 'sec.text.desc': 'Various ways to animate and style text for maximum impact in your presentations.',
+                'sec.transitions.title': 'Page Transitions', 'sec.transitions.desc': 'Different ways to transition between slides or pages in your presentation.',
+                'sec.mouse.title': 'Mouse & Cursor Effects', 'sec.mouse.desc': 'Interactive effects that respond to mouse movement and hover.',
+                'sec.backgrounds.title': 'Background Effects', 'sec.backgrounds.desc': 'Atmospheric backgrounds that add depth and visual interest.',
+                'sec.3d.title': '3D Effects', 'sec.3d.desc': 'CSS 3D transforms for depth and dimension.',
+                'sec.dataViz.title': 'Data Visualization', 'sec.dataViz.desc': 'Animated charts and counters for presenting data.',
+                'sec.images.title': 'Image Effects', 'sec.images.desc': 'Ways to animate and enhance images in presentations.',
+                'sec.micro.title': 'Micro-interactions', 'sec.micro.desc': 'Small UI feedback animations that make interfaces feel alive.',
+                'sec.advanced.title': 'Advanced Effects', 'sec.advanced.desc': 'More complex animations using physics and SVG.',
+                'card.typewriter.title': 'Typewriter', 'card.typewriter.desc': 'Text appears letter by letter with a blinking cursor, like someone typing in real-time.',
+                'card.scramble.title': 'Text Scramble', 'card.scramble.desc': 'Random characters resolve into readable text, like hacking scenes in movies.',
+                'card.gradient.title': 'Animated Gradient', 'card.gradient.desc': 'Text filled with shifting color gradients that animate continuously.',
+                'card.stroke.title': 'Stroke/Outline', 'card.stroke.desc': 'Hollow text with just the outline. Hover to fill it in.',
+                'card.glitch.title': 'Glitch Effect', 'card.glitch.desc': 'Text that jitters with RGB color separation for a digital glitch look.',
+                'card.blur.title': 'Blur Reveal', 'card.blur.desc': 'Text starts blurry and animates into sharp focus.',
+                'card.split.title': 'Split Text Wave', 'card.split.desc': 'Each letter animates independently, creating a wave effect on hover.',
+                'card.highlight.title': 'Text Highlight', 'card.highlight.desc': 'Background color "paints" behind text, like a highlighter marker.',
+                'card.variable.title': 'Variable Font', 'card.variable.desc': 'Font weight and spacing morph smoothly on hover.',
+                'card.wipe.title': 'Wipe Transition', 'card.wipe.desc': 'New slide wipes across the screen from left to right.',
+                'card.circle.title': 'Circle Reveal', 'card.circle.desc': 'New slide expands from a circle in the center.',
+                'card.flip.title': '3D Flip', 'card.flip.desc': 'Slides flip like a card in 3D space.',
+                'card.zoom.title': 'Zoom Through', 'card.zoom.desc': 'Current slide zooms out as new slide zooms in.',
+                'card.spotlight.title': 'Spotlight', 'card.spotlight.desc': 'A light follows your cursor, illuminating the dark background.',
+                'card.ripple.title': 'Ripple Effect', 'card.ripple.desc': 'Clicking creates an expanding ripple, like water.',
+                'card.magnetic.title': 'Magnetic Button', 'card.magnetic.desc': 'Button subtly pulls toward your cursor when nearby.',
+                'card.tilt.title': '3D Tilt', 'card.tilt.desc': 'Card tilts in 3D space following your mouse position.',
+                'card.mesh.title': 'Gradient Mesh', 'card.mesh.desc': 'Animated blob-like gradients that shift and morph.',
+                'card.noise.title': 'Noise/Grain Texture', 'card.noise.desc': 'Subtle film grain overlay adds texture and warmth.',
+                'card.grid.title': 'Animated Grid', 'card.grid.desc': 'Moving grid pattern creates a tech/cyber aesthetic.',
+                'card.wave.title': 'Wave Animation', 'card.wave.desc': 'Flowing wave pattern for a calm, organic feel.',
+                'card.flipCard.title': 'Flip Card', 'card.flipCard.desc': 'Card flips to reveal content on the back. Hover to see.',
+                'card.floating.title': 'Floating Element', 'card.floating.desc': 'Element gently bobs up and down, creating a dreamy effect.',
+                'card.cube.title': '3D Cube', 'card.cube.desc': 'Fully rotating 3D cube made with CSS transforms.',
+                'card.bar.title': 'Animated Bar Chart', 'card.bar.desc': 'Bars grow from zero to their values.',
+                'card.line.title': 'Line Chart Draw', 'card.line.desc': 'Line traces itself from left to right.',
+                'card.ring.title': 'Progress Ring', 'card.ring.desc': 'Circular progress indicator that fills up.',
+                'card.counter.title': 'Counter Animation', 'card.counter.desc': 'Numbers count up smoothly to a target value.',
+                'card.kenBurns.title': 'Ken Burns Effect', 'card.kenBurns.desc': 'Slow zoom and pan, like in documentaries.',
+                'card.hoverZoom.title': 'Hover Zoom', 'card.hoverZoom.desc': 'Image zooms in when you hover over it.',
+                'card.filters.title': 'CSS Filters', 'card.filters.desc': 'Hover each square to see different filter effects.',
+                'card.spinner.title': 'Loading Spinner', 'card.spinner.desc': 'Simple spinning indicator while content loads.',
+                'card.checkmark.title': 'Success Checkmark', 'card.checkmark.desc': 'Animated checkmark for successful actions.',
+                'card.shake.title': 'Error Shake', 'card.shake.desc': 'Element shakes to indicate an error.',
+                'card.toast.title': 'Toast Notification', 'card.toast.desc': 'Slide-in notification message.',
+                'card.bounce.title': 'Physics Bounce', 'card.bounce.desc': 'Realistic bouncing with proper easing curves.',
+                'card.morph.title': 'SVG Morph', 'card.morph.desc': 'Shape transforms smoothly into another shape.',
+                'card.confetti.title': 'Confetti', 'card.confetti.desc': 'Burst of colorful confetti for celebrations.',
+                'btn.scramble': 'Scramble', 'btn.toggle': 'Toggle', 'btn.animate': 'Animate', 'btn.reset': 'Reset',
+                'btn.count': 'Count to 1000', 'btn.show': 'Show', 'btn.triggerError': 'Trigger Error',
+                'btn.showToast': 'Show Toast', 'btn.morph': 'Morph', 'btn.celebrate': 'Celebrate!',
+                'footer.heading': 'Follow & Support', 'footer.wechat.strong': 'WeChat', 'footer.wechat.span': 'Follow official account',
+                'footer.coffee.strong': 'Buy me a coffee', 'footer.coffee.span': 'Show your support',
+                'footer.poweredBy': ' · Powered by ', 'footer.author': 'wangruofeng',
+                'footer.note': 'All demos run locally in real time in your browser',
+                'footer.alt.wechat': 'WeChat QR code', 'footer.alt.reward': 'Tip QR code'
+            },
+            zh: {
+                'page.title': '动画游乐场 - 网页演示效果',
+                'site.title': '动画游乐场',
+                'sidebar.tagline': '交互式网页演示效果合集',
+                'nav.textEffects': '文字效果', 'nav.textEffects.link': '全部文字效果',
+                'nav.transitions': '过渡', 'nav.transitions.link': '页面过渡',
+                'nav.mouse': '鼠标效果', 'nav.mouse.link': '光标与悬停',
+                'nav.backgrounds': '背景', 'nav.backgrounds.link': '背景效果',
+                'nav.3d': '3D 效果', 'nav.3d.link': '3D 变换',
+                'nav.dataViz': '数据可视化', 'nav.dataViz.link': '图表与计数器',
+                'nav.images': '图像', 'nav.images.link': '图像效果',
+                'nav.micro': '微交互', 'nav.micro.link': '界面反馈',
+                'nav.advanced': '进阶', 'nav.advanced.link': '物理与更多',
+                'sec.text.title': '文字效果', 'sec.text.desc': '多种为文字添加动画与样式的方法，让你的演示更具冲击力。',
+                'sec.transitions.title': '页面过渡', 'sec.transitions.desc': '在演示的幻灯片或页面之间切换的多种方式。',
+                'sec.mouse.title': '鼠标与光标效果', 'sec.mouse.desc': '响应鼠标移动与悬停的交互效果。',
+                'sec.backgrounds.title': '背景效果', 'sec.backgrounds.desc': '营造氛围的背景，为页面增添层次与视觉趣味。',
+                'sec.3d.title': '3D 效果', 'sec.3d.desc': '用 CSS 3D 变换营造深度与立体感。',
+                'sec.dataViz.title': '数据可视化', 'sec.dataViz.desc': '用于展示数据的动画图表与计数器。',
+                'sec.images.title': '图像效果', 'sec.images.desc': '在演示中为图像添加动画与增强效果的方式。',
+                'sec.micro.title': '微交互', 'sec.micro.desc': '让界面灵动起来的小型反馈动画。',
+                'sec.advanced.title': '进阶效果', 'sec.advanced.desc': '运用物理与 SVG 的更复杂动画。',
+                'card.typewriter.title': '打字机', 'card.typewriter.desc': '文字伴随闪烁的光标逐字显现，如同实时打字。',
+                'card.scramble.title': '文字扰乱', 'card.scramble.desc': '随机字符最终归位为可读文字，如同电影里的黑客场景。',
+                'card.gradient.title': '动画渐变', 'card.gradient.desc': '文字填充不断流动变换的彩色渐变。',
+                'card.stroke.title': '描边/轮廓', 'card.stroke.desc': '仅保留轮廓的空心文字。悬停即可填充实色。',
+                'card.glitch.title': '故障效果', 'card.glitch.desc': '文字抖动并产生 RGB 色彩分离，呈现数字故障质感。',
+                'card.blur.title': '模糊显现', 'card.blur.desc': '文字从模糊开始，动画过渡到清晰聚焦。',
+                'card.split.title': '分裂文字波浪', 'card.split.desc': '每个字母独立动画，悬停时形成波浪效果。',
+                'card.highlight.title': '文字高亮', 'card.highlight.desc': '背景色像荧光笔一样在文字后方"涂抹"而出。',
+                'card.variable.title': '可变字体', 'card.variable.desc': '字重与字距在悬停时平滑变化。',
+                'card.wipe.title': '擦除过渡', 'card.wipe.desc': '新幻灯片从左到右擦过屏幕。',
+                'card.circle.title': '圆形揭示', 'card.circle.desc': '新幻灯片从中心的圆形扩散而出。',
+                'card.flip.title': '3D 翻转', 'card.flip.desc': '幻灯片如卡片般在 3D 空间中翻转。',
+                'card.zoom.title': '穿透缩放', 'card.zoom.desc': '当前幻灯片缩小的同时，新幻灯片放大进入。',
+                'card.spotlight.title': '聚光灯', 'card.spotlight.desc': '一束光跟随你的光标，照亮深色背景。',
+                'card.ripple.title': '涟漪效果', 'card.ripple.desc': '点击产生扩散的涟漪，如同水面。',
+                'card.magnetic.title': '磁吸按钮', 'card.magnetic.desc': '光标靠近时，按钮被微微吸引过去。',
+                'card.tilt.title': '3D 倾斜', 'card.tilt.desc': '卡片随鼠标位置在 3D 空间中倾斜。',
+                'card.mesh.title': '渐变网格', 'card.mesh.desc': '类似色块的渐变不断流动变形。',
+                'card.noise.title': '噪点/颗粒纹理', 'card.noise.desc': '细腻的胶片颗粒叠加，增添质感与温度。',
+                'card.grid.title': '动画网格', 'card.grid.desc': '移动的网格图案营造科技/赛博美感。',
+                'card.wave.title': '波浪动画', 'card.wave.desc': '流动的波浪图案，带来平静、有机的感觉。',
+                'card.flipCard.title': '翻转卡片', 'card.flipCard.desc': '卡片翻转露出背面内容。悬停查看。',
+                'card.floating.title': '漂浮元素', 'card.floating.desc': '元素轻柔地上下浮动，营造梦幻效果。',
+                'card.cube.title': '3D 立方体', 'card.cube.desc': '用 CSS 变换制作的全方位旋转 3D 立方体。',
+                'card.bar.title': '动画柱状图', 'card.bar.desc': '柱条从零增长到目标数值。',
+                'card.line.title': '折线图绘制', 'card.line.desc': '折线从左到右自我描摹而出。',
+                'card.ring.title': '进度环', 'card.ring.desc': '逐渐填满的环形进度指示器。',
+                'card.counter.title': '计数器动画', 'card.counter.desc': '数字平滑递增到目标值。',
+                'card.kenBurns.title': 'Ken Burns 效果', 'card.kenBurns.desc': '缓慢的缩放与平移，如同纪录片手法。',
+                'card.hoverZoom.title': '悬停缩放', 'card.hoverZoom.desc': '鼠标悬停时图像放大。',
+                'card.filters.title': 'CSS 滤镜', 'card.filters.desc': '悬停每个方块查看不同的滤镜效果。',
+                'card.spinner.title': '加载旋转指示器', 'card.spinner.desc': '内容加载时简单的旋转指示器。',
+                'card.checkmark.title': '成功对勾', 'card.checkmark.desc': '表示操作成功的动画对勾。',
+                'card.shake.title': '错误抖动', 'card.shake.desc': '元素抖动以提示错误。',
+                'card.toast.title': '轻提示通知', 'card.toast.desc': '滑入式的通知消息。',
+                'card.bounce.title': '物理弹跳', 'card.bounce.desc': '带有恰当缓动曲线的真实弹跳。',
+                'card.morph.title': 'SVG 变形', 'card.morph.desc': '形状平滑地变换为另一个形状。',
+                'card.confetti.title': '彩纸礼花', 'card.confetti.desc': '庆祝时迸发的彩色礼花。',
+                'btn.scramble': '扰乱', 'btn.toggle': '切换', 'btn.animate': '播放', 'btn.reset': '重置',
+                'btn.count': '数到 1000', 'btn.show': '显示', 'btn.triggerError': '触发错误',
+                'btn.showToast': '显示提示', 'btn.morph': '变形', 'btn.celebrate': '庆祝！',
+                'footer.heading': '关注与支持', 'footer.wechat.strong': '微信', 'footer.wechat.span': '关注公众号',
+                'footer.coffee.strong': '请作者喝杯咖啡', 'footer.coffee.span': '打赏支持',
+                'footer.poweredBy': ' · 由 ', 'footer.author': '王若风',
+                'footer.note': '所有演示均在浏览器本地实时运行',
+                'footer.alt.wechat': '微信二维码', 'footer.alt.reward': '打赏二维码'
+            },
+            tw: {
+                'page.title': '動畫遊樂場 - 網頁演示效果',
+                'site.title': '動畫遊樂場',
+                'sidebar.tagline': '互動式網頁演示效果合集',
+                'nav.textEffects': '文字效果', 'nav.textEffects.link': '全部文字效果',
+                'nav.transitions': '過渡', 'nav.transitions.link': '頁面過渡',
+                'nav.mouse': '滑鼠效果', 'nav.mouse.link': '游標與懸停',
+                'nav.backgrounds': '背景', 'nav.backgrounds.link': '背景效果',
+                'nav.3d': '3D 效果', 'nav.3d.link': '3D 變換',
+                'nav.dataViz': '資料視覺化', 'nav.dataViz.link': '圖表與計數器',
+                'nav.images': '圖像', 'nav.images.link': '圖像效果',
+                'nav.micro': '微互動', 'nav.micro.link': '介面回饋',
+                'nav.advanced': '進階', 'nav.advanced.link': '物理與更多',
+                'sec.text.title': '文字效果', 'sec.text.desc': '多種為文字添加動畫與樣式的方法，讓你的簡報更具衝擊力。',
+                'sec.transitions.title': '頁面過渡', 'sec.transitions.desc': '在簡報的投影片或頁面之間切換的多種方式。',
+                'sec.mouse.title': '滑鼠與游標效果', 'sec.mouse.desc': '回應滑鼠移動與懸停的互動效果。',
+                'sec.backgrounds.title': '背景效果', 'sec.backgrounds.desc': '營造氛圍的背景，為頁面增添層次與視覺趣味。',
+                'sec.3d.title': '3D 效果', 'sec.3d.desc': '用 CSS 3D 變換營造深度與立體感。',
+                'sec.dataViz.title': '資料視覺化', 'sec.dataViz.desc': '用於展示資料的動畫圖表與計數器。',
+                'sec.images.title': '圖像效果', 'sec.images.desc': '在簡報中為圖像添加動畫與增強效果的方式。',
+                'sec.micro.title': '微互動', 'sec.micro.desc': '讓介面靈動起來的小型回饋動畫。',
+                'sec.advanced.title': '進階效果', 'sec.advanced.desc': '運用物理與 SVG 的更複雜動畫。',
+                'card.typewriter.title': '打字機', 'card.typewriter.desc': '文字伴隨閃爍的游標逐字顯現，如同即時打字。',
+                'card.scramble.title': '文字擾亂', 'card.scramble.desc': '隨機字元最終歸位為可讀文字，如同電影裡的駭客場景。',
+                'card.gradient.title': '動畫漸層', 'card.gradient.desc': '文字填充不斷流動變換的彩色漸層。',
+                'card.stroke.title': '描邊/輪廓', 'card.stroke.desc': '僅保留輪廓的空心文字。懸停即可填滿實色。',
+                'card.glitch.title': '故障效果', 'card.glitch.desc': '文字抖動並產生 RGB 色彩分離，呈現數位故障質感。',
+                'card.blur.title': '模糊顯現', 'card.blur.desc': '文字從模糊開始，動畫過渡到清晰聚焦。',
+                'card.split.title': '分裂文字波浪', 'card.split.desc': '每個字母獨立動畫，懸停時形成波浪效果。',
+                'card.highlight.title': '文字高亮', 'card.highlight.desc': '背景色像螢光筆一樣在文字後方「塗抹」而出。',
+                'card.variable.title': '可變字體', 'card.variable.desc': '字重與字距在懸停時平滑變化。',
+                'card.wipe.title': '擦除過渡', 'card.wipe.desc': '新投影片從左到右擦過螢幕。',
+                'card.circle.title': '圓形揭示', 'card.circle.desc': '新投影片從中心的圓形擴散而出。',
+                'card.flip.title': '3D 翻轉', 'card.flip.desc': '投影片如卡片般在 3D 空間中翻轉。',
+                'card.zoom.title': '穿透縮放', 'card.zoom.desc': '當前投影片縮小的同時，新投影片放大進入。',
+                'card.spotlight.title': '聚光燈', 'card.spotlight.desc': '一束光跟隨你的游標，照亮深色背景。',
+                'card.ripple.title': '漣漪效果', 'card.ripple.desc': '點擊產生擴散的漣漪，如同水面。',
+                'card.magnetic.title': '磁吸按鈕', 'card.magnetic.desc': '游標靠近時，按鈕被微微吸引過去。',
+                'card.tilt.title': '3D 傾斜', 'card.tilt.desc': '卡片隨滑鼠位置在 3D 空間中傾斜。',
+                'card.mesh.title': '漸層網格', 'card.mesh.desc': '類似色塊的漸層不斷流動變形。',
+                'card.noise.title': '雜訊/顆粒紋理', 'card.noise.desc': '細膩的底片顆粒疊加，增添質感與溫度。',
+                'card.grid.title': '動畫網格', 'card.grid.desc': '移動的網格圖案營造科技/賽博美感。',
+                'card.wave.title': '波浪動畫', 'card.wave.desc': '流動的波浪圖案，帶來平靜、有機的感覺。',
+                'card.flipCard.title': '翻轉卡片', 'card.flipCard.desc': '卡片翻轉露出背面內容。懸停查看。',
+                'card.floating.title': '漂浮元素', 'card.floating.desc': '元素輕柔地上下浮動，營造夢幻效果。',
+                'card.cube.title': '3D 立方體', 'card.cube.desc': '用 CSS 變換製作的全方位旋轉 3D 立方體。',
+                'card.bar.title': '動畫長條圖', 'card.bar.desc': '長條從零增長到目標數值。',
+                'card.line.title': '折線圖繪製', 'card.line.desc': '折線從左到右自我描摹而出。',
+                'card.ring.title': '進度環', 'card.ring.desc': '逐漸填滿的環形進度指示器。',
+                'card.counter.title': '計數器動畫', 'card.counter.desc': '數字平滑遞增到目標值。',
+                'card.kenBurns.title': 'Ken Burns 效果', 'card.kenBurns.desc': '緩慢的縮放與平移，如同紀錄片手法。',
+                'card.hoverZoom.title': '懸停縮放', 'card.hoverZoom.desc': '滑鼠懸停時圖像放大。',
+                'card.filters.title': 'CSS 濾鏡', 'card.filters.desc': '懸停每個方塊查看不同的濾鏡效果。',
+                'card.spinner.title': '載入旋轉指示器', 'card.spinner.desc': '內容載入時簡單的旋轉指示器。',
+                'card.checkmark.title': '成功打勾', 'card.checkmark.desc': '表示操作成功的動畫打勾。',
+                'card.shake.title': '錯誤抖動', 'card.shake.desc': '元素抖動以提示錯誤。',
+                'card.toast.title': '輕提示通知', 'card.toast.desc': '滑入式的通知訊息。',
+                'card.bounce.title': '物理彈跳', 'card.bounce.desc': '帶有恰當緩動曲線的真實彈跳。',
+                'card.morph.title': 'SVG 變形', 'card.morph.desc': '形狀平滑地變換為另一個形狀。',
+                'card.confetti.title': '彩紙禮花', 'card.confetti.desc': '慶祝時迸發的彩色禮花。',
+                'btn.scramble': '擾亂', 'btn.toggle': '切換', 'btn.animate': '播放', 'btn.reset': '重置',
+                'btn.count': '數到 1000', 'btn.show': '顯示', 'btn.triggerError': '觸發錯誤',
+                'btn.showToast': '顯示提示', 'btn.morph': '變形', 'btn.celebrate': '慶祝！',
+                'footer.heading': '關注與支持', 'footer.wechat.strong': '微信', 'footer.wechat.span': '關注公眾號',
+                'footer.coffee.strong': '請作者喝杯咖啡', 'footer.coffee.span': '打賞支持',
+                'footer.poweredBy': ' · 由 ', 'footer.author': '王若風',
+                'footer.note': '所有演示均在瀏覽器本地即時執行',
+                'footer.alt.wechat': '微信二維碼', 'footer.alt.reward': '打賞二維碼'
+            }
+        };
+
+        function detectLang() {
+            try {
+                const saved = localStorage.getItem('lang');
+                if (saved && I18N[saved]) return saved;
+            } catch (e) {}
+            const n = (navigator.language || 'en').toLowerCase();
+            if (n.startsWith('zh')) {
+                return (n.includes('tw') || n.includes('hk') || n.includes('mo') || n.includes('hant')) ? 'tw' : 'zh';
+            }
+            return 'en';
+        }
+
+        function applyLang(lang) {
+            const d = I18N[lang] || I18N.en;
+            document.documentElement.lang = lang === 'tw' ? 'zh-Hant' : (lang === 'zh' ? 'zh-Hans' : 'en');
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const k = el.getAttribute('data-i18n');
+                if (d[k] != null) el.textContent = d[k];
+            });
+            document.querySelectorAll('[data-i18n-alt]').forEach(el => {
+                const k = el.getAttribute('data-i18n-alt');
+                if (d[k] != null) el.alt = d[k];
+            });
+            document.title = d['page.title'] || document.title;
+            document.querySelectorAll('.lang-btn').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+            });
+            try { localStorage.setItem('lang', lang); } catch (e) {}
+        }
+
+        applyLang(detectLang());
+
         /* ============================================
            TEXT EFFECTS
            ============================================ */

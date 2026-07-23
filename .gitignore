@@ -40,3 +40,8 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# AI
+.omx/
+.playwright-mcp/
+.openai/

@@ -1,98 +1,111 @@
-# vinext-starter
+<div align="center">
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+# 🎨 Animation Playground
 
-## Prerequisites
+**140+ 个纯 CSS / SVG / Canvas 网页动画特效合集**
 
-- Node.js `>=22.13.0`
+一次集齐演讲、产品落地页、个人主页用得上的所有 Web 动效——浏览器本地实时运行,零重型依赖。
 
-## Quick Start
+[![Made with HTML](https://img.shields.io/badge/Made%20with-HTML%2FCSS%2FSVG%2FCanvas-ff6b9d?style=flat-square)]()
+[![No Framework Tax](https://img.shields.io/badge/Animation-Pure%20Web%20Tech-00f5ff?style=flat-square)]()
+[![Bilingual](https://img.shields.io/badge/i18n-中文%20%2F%20English-7c3aed?style=flat-square)]()
+[![Runs Locally](https://img.shields.io/badge/Runs-Locally%20in%20Browser-22c55e?style=flat-square)]()
+
+🔗 **在线预览**:[在线体验地址](#) _(待补充)_
+
+</div>
+
+---
+
+## ✨ 项目亮点
+
+- **140+ 个动画 demo**,覆盖文字、过渡、3D、数据可视化、物理效果等常见场景
+- **9 大分类** 系统化组织,左侧导航直达任意效果
+- **纯原生 Web 技术** 实现——不依赖 GSAP / Three.js / Framer Motion 等重型动画库,拷贝即用
+- **浏览器本地实时运行**,无需后端、无需构建即可直接预览
+- **中英双语** 界面,一键切换
+- **响应式设计**,桌面与移动端皆可浏览
+
+## 📂 特效分类
+
+| 分类 | 内容 |
+|------|------|
+| 📝 **Text Effects** 文字效果 | 打字机、渐变描边、故障毛刺、逐字浮现…… |
+| 🔀 **Page Transitions** 页面过渡 | 进出场动画、视图切换、遮罩转场 |
+| 🖱️ **Mouse Effects** 光标 & 悬停 | 自定义光标、磁吸悬停、跟随特效 |
+| 🌌 **Backgrounds** 背景特效 | 粒子、噪点、渐变流动、网格动效 |
+| 🧊 **3D Transforms** 3D 变换 | 卡片翻转、立体视差、空间旋转 |
+| 📊 **Charts & Counters** 图表 & 计数器 | 数字滚动、动态图表、进度可视化 |
+| 🖼️ **Image Effects** 图片效果 | 悬停滤镜、视差、视窗揭示 |
+| ⚡ **UI Feedback** 微交互 | 按钮反馈、加载状态、交互响应 |
+| 🌀 **Physics & More** 物理 & 高级 | 弹簧、惯性、流体与更多实验性效果 |
+
+## 🚀 本地运行
 
 ```bash
+# 安装依赖
 npm install
+
+# 启动开发服务器
 npm run dev
+
+# 构建生产版本
 npm run build
+
+# 运行测试
+npm test
 ```
 
-This starter does not use `wrangler.jsonc`.
+> 💡 核心 demo 全部集中在 [`index.html`](./index.html) 中,也可直接用浏览器打开预览,无需任何构建步骤。
 
-## Included Shape
+## 🛠 技术栈
 
-- edit site code under `app/`
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+| 层级 | 技术 |
+|------|------|
+| 动效实现 | **HTML · CSS · SVG · Canvas · 原生 JavaScript** |
+| 构建工具 | [Vite](https://vite.dev) · [vinext](https://www.npmjs.com/package/vinext) |
+| 样式 | [Tailwind CSS 4](https://tailwindcss.com) |
+| 部署 | [Cloudflare Pages](https://pages.cloudflare.com) |
 
-## Workspace Auth Headers
+## 📁 项目结构
 
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
-
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
-
-Treat the full name as optional and fall back to email when it is absent:
-
-```tsx
-import { headers } from "next/headers";
-
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
+```
+animation-playground/
+├── index.html          # 全部 140+ 动画 demo(单文件)
+├── public/             # 静态资源(favicon、二维码等)
+├── vite.config.ts      # 构建配置
+├── worker/             # Cloudflare Worker 入口
+└── package.json
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+## 🌐 部署
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+项目通过 Cloudflare Pages 部署。Fork 本仓库后:
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+```bash
+npm run build      # 产物输出至 dist/client
+```
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+将 `dist/client` 部署至任意静态托管平台(Cloudflare Pages / Vercel / Netlify / GitHub Pages)即可。
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+## 👤 关于作者
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+**王若风** — 前端 / 动效 / Web 实验爱好者
 
-## Useful Commands
+- 🐦 X:[@oneruofeng](https://x.com/oneruofeng)
+- 💻 GitHub:[@wangruofeng](https://github.com/wangruofeng)
+- 🌐 个人站点:[wangruofeng007.com](https://wangruofeng007.com/)
 
-- `npm run dev`: start local development
-- `npm run build`: verify the vinext build output
-- `npm test`: build the starter and verify its rendered loading skeleton
-- `npm run db:generate`: generate Drizzle migrations after schema changes
+如果这个项目对你有帮助,欢迎 ⭐ Star 支持,或扫码请作者喝杯咖啡 ☕
 
-## Learn More
+## 📄 License
 
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+本项目代码暂未指定开源协议,仅供学习参考。如需商用请先联系作者。
+
+---
+
+<div align="center">
+
+_所有演示均在浏览器本地实时运行 · Made with ❤️ by 王若风_
+
+</div>
